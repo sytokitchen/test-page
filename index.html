@@ -16,7 +16,13 @@
     }
     html{scroll-behavior:smooth;}
     *{box-sizing:border-box;}
-    body{margin:0; font-family:Arial, sans-serif; background:var(--off-black); color:var(--text); overflow-x:hidden;}
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:var(--off-black);
+      color:var(--text);
+      overflow-x:hidden;
+    }
 
     header{
       position:fixed; top:0; left:0; right:0; z-index:2000;
@@ -39,7 +45,10 @@
       background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);
     }
     nav a:hover{background:rgba(255,255,255,0.15);}
-    .btn{background:var(--dark-olive); color:#fff; padding:10px 16px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;}
+    .btn{
+      background:var(--dark-olive); color:#fff; padding:10px 16px;
+      border-radius:10px; border:none; cursor:pointer; font-weight:bold;
+    }
     .btn:hover{background:var(--olive-metallic);}
 
     main{margin:0; padding:0;}
@@ -61,13 +70,103 @@
     .hero h2{margin:0 0 14px 0; color:#fff; font-size:clamp(30px,5vw,56px); font-weight:800; line-height:1.15;}
     .hero p{margin:0; color:#fff; font-size:clamp(16px,2.2vw,22px); line-height:1.55;}
 
-    .section{padding:60px 20px; max-width:1000px; margin:auto;}
+    .section{
+      padding:60px 20px;
+      max-width:1000px;
+      margin:0 auto;
+    }
     .section h3{text-align:center; font-size:2em; color:var(--accent); margin-bottom:24px;}
     .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;}
-    .card{background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px; box-shadow:0 4px 12px rgba(0,0,0,0.25);}
+    .card{
+      background:rgba(0,0,0,0.25);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.25);
+    }
     .card h4{margin:0 0 8px; color:var(--accent);}
     .muted{color:#e7d6c8; opacity:.95;}
     footer{text-align:center; background:var(--dark-wood); color:var(--accent); padding:15px;}
+
+    /* Предзаказ - форма */
+    #preorder{
+      background:rgba(0,0,0,0.18);
+      border-radius:18px;
+      margin-top:20px;
+      margin-bottom:40px;
+    }
+    .preorder-intro{
+      text-align:left;
+      font-size:18px;
+      line-height:1.8;
+      max-width:860px;
+      margin:0 auto 24px;
+    }
+    .preorder-form{
+      max-width:720px;
+      margin:0 auto;
+      display:grid;
+      gap:16px;
+    }
+    .preorder-row{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .preorder-row label{
+      font-size:15px;
+      font-weight:600;
+    }
+    .preorder-row input,
+    .preorder-row textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(0,0,0,0.3);
+      color:var(--text);
+      font-size:15px;
+      font-family:inherit;
+    }
+    .preorder-row input::placeholder,
+    .preorder-row textarea::placeholder{
+      color:rgba(245,245,245,0.6);
+    }
+    .preorder-row small{
+      font-size:13px;
+      opacity:0.8;
+    }
+    .preorder-actions{
+      margin-top:6px;
+      display:flex;
+      justify-content:flex-start;
+    }
+
+    /* Аудио-запись */
+    .audio-controls{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .audio-status{
+      font-size:14px;
+      opacity:0.9;
+    }
+    .btn-secondary{
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.25);
+    }
+    .btn-secondary:hover{
+      background:rgba(255,255,255,0.2);
+    }
+
+    /* Разделитель для блока "Доставка" */
+    #delivery{
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding-top:40px;
+      margin-top:10px;
+    }
 
     @media (max-width: 860px){
       .menu-toggle{display:flex}
@@ -87,6 +186,8 @@
       .text-box{max-width:92%; padding:14px 16px;}
     }
   </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
   <header>
@@ -97,6 +198,7 @@
         <ul>
           <li><a href="#home">Главная</a></li>
           <li><a href="#about">О нас</a></li>
+          <li><a href="#preorder">Предзаказ</a></li>
           <li><a href="#delivery">Доставка</a></li>
           <li><a href="#contact">Контакты</a></li>
           <li><a class="btn" href="#order">Заказать</a></li>
@@ -132,7 +234,69 @@
       </p>
     </section>
 
-    <section id="delivery" class="section" style="background: rgba(0,0,0,0.15);">
+    <section id="preorder" class="section">
+	  <h3>Предзаказ</h3>
+	  <p class="preorder-intro">
+		Оставьте предзаказ, и мы подготовим всё к нужному времени. Можно указать желаемые блюда и добавить комментарий.
+	  </p>
+	  <form id="preorder-form" class="preorder-form">
+		<div class="preorder-row">
+		  <label for="preorder-name">ФИО</label>
+		  <input id="preorder-name" name="name" type="text" required />
+		</div>
+
+		<div class="preorder-row">
+		  <label for="preorder-phone">Телефон (Россия)</label>
+		  <input
+			id="preorder-phone"
+			name="phone"
+			type="tel"
+			inputmode="tel"
+			required
+			placeholder="+7 (___) ___-__-__"
+		  />
+		  <small>Мы автоматически подставим скобки и дефисы в формате +7 (XXX) XXX-XX-XX.</small>
+		</div>
+
+		<div class="preorder-row">
+		  <label for="preorder-date">Дата заказа</label>
+		  <input
+			id="preorder-date"
+			name="date"
+			type="text"
+			required
+			placeholder="Выберите дату"
+		  />
+		</div>
+
+		<div class="preorder-row">
+		  <label for="preorder-comment">Комментарий к заказу</label>
+		  <textarea
+			id="preorder-comment"
+			name="comment"
+			rows="3"
+			style="overflow:hidden; resize:none;"
+			placeholder="Опишите желаемые блюда, время получения или другие детали."
+		  ></textarea>
+		</div>
+
+		<div class="preorder-row">
+		  <label>Голосовой комментарий (по желанию)</label>
+		  <div class="audio-controls">
+			<button type="button" class="btn btn-secondary" id="audio-record-btn">Записать</button>
+			<span class="audio-status" id="audio-status">Запись не добавлена</span>
+		  </div>
+		  <small>Запись до ~2 минут. Работает в современных браузерах (Chrome, Edge, мобильные на Android и т.п.).</small>
+		</div>
+
+		<div class="preorder-actions">
+		  <button type="submit" class="btn" id="preorder-submit-btn">Подтвердить предзаказ</button>
+		</div>
+	  </form>
+	</section>
+
+
+    <section id="delivery" class="section">
       <h3>Доставка</h3>
       <div class="grid">
         <div class="card">
@@ -174,27 +338,179 @@
   <footer>© 2025 Сыто kitchen. Все права защищены.</footer>
 
   <script>
-    const hdr = document.querySelector('header');
-    function syncHeaderHeight(){
-      const h = hdr ? hdr.offsetHeight : 0;
-      document.documentElement.style.setProperty('--header-h', h + 'px');
-    }
-    window.addEventListener('load', syncHeaderHeight);
-    window.addEventListener('resize', syncHeaderHeight);
+  // Подгоняем высоту хэдера
+  const hdr = document.querySelector('header');
+  function syncHeaderHeight(){
+    const h = hdr ? hdr.offsetHeight : 0;
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+  window.addEventListener('load', syncHeaderHeight);
+  window.addEventListener('resize', syncHeaderHeight);
 
-    const nav = document.querySelector('header nav');
-    const btn = document.querySelector('.menu-toggle');
-    const links = nav.querySelectorAll('a');
+  // Мобильное меню
+  const nav = document.querySelector('header nav');
+  const btn = document.querySelector('.menu-toggle');
+  const links = nav.querySelectorAll('a');
 
-    function closeMenu(){ nav.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const opened = nav.classList.toggle('open');
-      btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+  function closeMenu(){ nav.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const opened = nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+  });
+  document.addEventListener('click', e => { if(!nav.contains(e.target)) closeMenu(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+  links.forEach(link => link.addEventListener('click', closeMenu));
+
+  // ===== Маска телефона +7 (XXX) XXX-XX-XX =====
+  const phoneInput = document.getElementById('preorder-phone');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', () => {
+      let digits = phoneInput.value.replace(/\D/g, '');
+
+      // если ввели 8 -> меняем на 7
+      if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+      if (!digits.startsWith('7')) digits = '7' + digits; // гарантируем +7
+      digits = digits.slice(0, 11); // максимум 11 цифр (7 + 10)
+
+      let result = '+7';
+      if (digits.length > 1) {
+        result += ' (' + digits.slice(1, 4);
+        if (digits.length >= 4) result += ')';
+        if (digits.length > 4) result += ' ' + digits.slice(4, 7);
+        if (digits.length > 7) result += '-' + digits.slice(7, 9);
+        if (digits.length > 9) result += '-' + digits.slice(9, 11);
+      }
+
+      phoneInput.value = result;
     });
-    document.addEventListener('click', e => { if(!nav.contains(e.target)) closeMenu(); });
-    document.addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
-    links.forEach(link => link.addEventListener('click', closeMenu));
-  </script>
+
+    // при фокусе, если поле пустое — сразу ставим "+7 "
+    phoneInput.addEventListener('focus', () => {
+      if (!phoneInput.value.trim()) {
+        phoneInput.value = '+7 ';
+      }
+    });
+  }
+
+  // ===== Авто-resize textarea =====
+  const commentArea = document.getElementById('preorder-comment');
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+  if (commentArea) {
+    autoResize(commentArea);
+    commentArea.addEventListener('input', () => autoResize(commentArea));
+  }
+
+  // ===== Современный date-picker (flatpickr) =====
+  const dateInput = document.getElementById('preorder-date');
+  if (dateInput && typeof flatpickr !== 'undefined') {
+    flatpickr(dateInput, {
+      dateFormat: 'd.m.Y',
+      minDate: 'today'
+      // можно подключить локаль ru отдельно, если захочешь
+    });
+  }
+
+  // ===== Аудио-запись =====
+  const recordBtn = document.getElementById('audio-record-btn');
+  const statusEl = document.getElementById('audio-status');
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let recordedBlob = null;
+  let isRecording = false;
+
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) audioChunks.push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        if (audioChunks.length > 0) {
+          recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const seconds = Math.round(recordedBlob.size / 16000); // грубая оценка
+          statusEl.textContent = 'Запись готова (примерно ' + seconds + ' сек.)';
+        } else {
+          statusEl.textContent = 'Запись не добавлена';
+          recordedBlob = null;
+        }
+      };
+      mediaRecorder.start();
+      isRecording = true;
+      recordBtn.textContent = 'Стоп';
+      statusEl.textContent = 'Идёт запись...';
+    } catch (err) {
+      console.error(err);
+      alert('Не удалось получить доступ к микрофону. Проверьте разрешения браузера.');
+    }
+  }
+
+  function stopRecording() {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(t => t.stop());
+      mediaRecorder = null;
+    }
+    isRecording = false;
+    recordBtn.textContent = 'Записать';
+  }
+
+  if (recordBtn) {
+    recordBtn.addEventListener('click', () => {
+      if (!isRecording) startRecording();
+      else stopRecording();
+    });
+  }
+
+  // ===== Отправка формы на Cloudflare Worker =====
+  const preorderForm = document.getElementById('preorder-form');
+  const submitBtn = document.getElementById('preorder-submit-btn');
+
+  const WORKER_URL = 'https://syto-preorder.syto-kitchen.workers.dev'
+
+  if (preorderForm) {
+    preorderForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(preorderForm);
+      if (recordedBlob) {
+        formData.append('voice', recordedBlob, 'comment.webm');
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправляем...';
+
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          alert('Спасибо! Предзаказ отправлен.');
+          preorderForm.reset();
+          recordedBlob = null;
+          if (statusEl) statusEl.textContent = 'Запись не добавлена';
+          if (commentArea) autoResize(commentArea);
+        } else {
+          console.error('Ответ воркера:', await response.text());
+          alert('Ошибка при отправке заказа. Попробуйте ещё раз.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Не удалось связаться с сервером. Проверьте подключение к интернету.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Подтвердить предзаказ';
+      }
+    });
+  }
+</script>
+
 </body>
 </html>
