@@ -141,6 +141,29 @@
       display:flex;
       justify-content:flex-start;
     }
+    .set-options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+      align-items: flex-start;
+    }
+    .set-options label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      white-space: nowrap;
+      font-size: 14px;
+      width: auto;
+      text-align: left;
+    }
+    .set-options input[type="radio"] {
+      cursor: pointer;
+      accent-color: var(--accent);
+      margin: 0;
+    }
+
 
     /* Аудио-запись */
     .audio-controls{
@@ -199,9 +222,9 @@
           <li><a href="#home">Главная</a></li>
           <li><a href="#about">О нас</a></li>
           <li><a href="#preorder">Предзаказ</a></li>
-          <li><a href="#delivery">Доставка</a></li>
+          <!-- <li><a href="#delivery">Доставка</a></li> -->
           <li><a href="#contact">Контакты</a></li>
-          <li><a class="btn" href="#order">Заказать</a></li>
+          <!-- <li><a class="btn" href="#order">Заказать</a></li> -->
         </ul>
       </nav>
     </div>
@@ -237,7 +260,10 @@
     <section id="preorder" class="section">
 	  <h3>Предзаказ</h3>
 	  <p class="preorder-intro">
-		Оставьте предзаказ, и мы подготовим всё к нужному времени. Можно указать желаемые блюда и добавить комментарий.
+		Мы рады принять ваш заказ!
+    Пожалуйста, укажите ваше имя, номер телефона и желаемую дату получения.
+    Для удобства вы сможете выбрать один из готовых наборов или оформить индивидуальный заказ — просто опишите его в поле комментария.
+    Если вам удобнее, вы можете добавить голосовой комментарий.
 	  </p>
 	  <form id="preorder-form" class="preorder-form">
 		<div class="preorder-row">
@@ -255,7 +281,6 @@
 			required
 			placeholder="+7 (___) ___-__-__"
 		  />
-		  <small>Мы автоматически подставим скобки и дефисы в формате +7 (XXX) XXX-XX-XX.</small>
 		</div>
 
 		<div class="preorder-row">
@@ -268,6 +293,36 @@
 			placeholder="Выберите дату"
 		  />
 		</div>
+
+    <div class="preorder-row">
+          <label>Выберите один из готовых наборов или укажите свой вариант в комментарии.</label>
+          <div class="set-options">
+            <label>
+              <input type="radio" name="set_choice" value="set1" checked>
+              Сет 1
+            </label>
+            <label>
+              <input type="radio" name="set_choice" value="set2">
+              Сет 2
+            </label>
+            <label>
+              <input type="radio" name="set_choice" value="set3">
+              Сет 3
+            </label>
+            <label>
+              <input type="radio" name="set_choice" value="set4">
+              Сет 4
+            </label>
+            <label>
+              <input type="radio" name="set_choice" value="set5">
+              Сет 5
+            </label>
+            <label>
+              <input type="radio" name="set_choice" value="custom">
+              Свой выбор
+            </label>
+          </div>
+        </div>
 
 		<div class="preorder-row">
 		  <label for="preorder-comment">Комментарий к заказу</label>
@@ -286,7 +341,6 @@
 			<button type="button" class="btn btn-secondary" id="audio-record-btn">Записать</button>
 			<span class="audio-status" id="audio-status">Запись не добавлена</span>
 		  </div>
-		  <small>Запись до ~2 минут. Работает в современных браузерах (Chrome, Edge, мобильные на Android и т.п.).</small>
 		</div>
 
 		<div class="preorder-actions">
@@ -296,7 +350,7 @@
 	</section>
 
 
-    <section id="delivery" class="section">
+    <!-- <section id="delivery" class="section">
       <h3>Доставка</h3>
       <div class="grid">
         <div class="card">
@@ -322,7 +376,7 @@
       <div style="text-align:center; margin-top:8px;">
         <a class="btn" href="#contact">Связаться</a>
       </div>
-    </section>
+    </section> -->
 
     <section id="contact" class="section" style="background:#1F2421;">
       <h3>Контакты</h3>
@@ -402,6 +456,25 @@
   if (commentArea) {
     autoResize(commentArea);
     commentArea.addEventListener('input', () => autoResize(commentArea));
+  }
+
+  // ===== Placeholder для комментария в зависимости от выбора сета =====
+  const setRadios = document.querySelectorAll('input[name="set_choice"]');
+  if (commentArea && setRadios.length) {
+    const updateCommentPlaceholder = () => {
+      const selected = Array.from(setRadios).find(r => r.checked);
+      if (!selected) return;
+
+      if (selected.value === 'custom') {
+        commentArea.placeholder = 'Опишите желаемые блюда, время получения или другие детали.';
+      } else {
+        commentArea.placeholder = 'При необходимости допишите пожелания к выбранному набору.';
+      }
+      autoResize(commentArea);
+    };
+
+    setRadios.forEach(r => r.addEventListener('change', updateCommentPlaceholder));
+    updateCommentPlaceholder();
   }
 
   // ===== Современный date-picker (flatpickr) =====
