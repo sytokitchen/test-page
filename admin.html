@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table th, table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .btn-danger {
+      background-color: #f44336;
+    }
+    .form-container{
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .form-row-top{
+      display: grid;
+      grid-template-columns: 1fr 5fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .form-row-bottom{
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(120px, max-content);
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .form-row-bottom > *{
+      min-width: 0;
+    }
+
+    .form-row-bottom input,
+    .form-row-bottom select{
+      width: 100%;
+    }
+
+    .form-row-bottom .btn{
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1100px){
+      .form-row-bottom{
+        grid-template-columns: repeat(3, minmax(160px, 1fr));
+      }
+    }
+
+    @media (max-width: 600px){
+      .form-row-top{
+        grid-template-columns: 1fr;
+      }
+      .form-row-bottom{
+        grid-template-columns: 1fr;
+      }
+    }
+    img {
+      width: 100px;
+      height: auto;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Panel - Menu Management</h1>
+
+    <!-- Form to add a new product -->
+    <div class="form-container">
+
+      <div class="form-row-top">
+        <input type="text" id="name" placeholder="Product Name" />
+        <input type="text" id="description" placeholder="Description" />
+      </div>
+
+      <div class="form-row-bottom">
+        <input type="number" id="price" placeholder="Price" />
+
+        <select id="price_unit">
+          <option value="100 г" selected>Цена за: 100 г</option>
+          <option value="г">Цена за: г</option>
+          <option value="кг">Цена за: кг</option>
+          <option value="мл">Цена за: мл</option>
+          <option value="л">Цена за: л</option>
+          <option value="шт">Цена за: шт</option>
+          <option value="порц.">Цена за: порц.</option>
+        </select>
+
+        <input type="file" id="photo" />
+
+        <select id="is_set">
+          <option value="true">Is Set: Yes</option>
+          <option value="false">Is Set: No</option>
+        </select>
+
+        <select id="show_on_site">
+          <option value="true">Show on Site: Yes</option>
+          <option value="false">Show on Site: No</option>
+        </select>
+
+        <select id="is_available">
+          <option value="true">Available: Yes</option>
+          <option value="false">Available: No</option>
+        </select>
+
+        <button class="btn" id="addProductBtn">Add Product</button>
+        <button class="btn btn-danger" id="resetBtn">Reset</button>
+      </div>
+
+    </div>
+
+    <div id="editPreview" style="margin-top: 10px;"></div>
+
+    <h2>Product List</h2>
+    <table id="productsTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Price Unit</th>
+          <th>Is Set</th>
+          <th>Show on Site</th>
+          <th>Is Available</th>
+          <th>Photo</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Product rows will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const apiUrl = "https://menu.syto-kitchen.workers.dev";
+
+    // Read token from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    // If missing → block access
+    if (!token) {
+        document.body.innerHTML = "<h2 style='text-align:center;color:red;'>Access denied: missing token</h2>";
+        throw new Error("Access denied: no token");
+    }
+
+    // Function to fetch and display products
+    async function fetchProducts() {
+      const response = await fetch(`${apiUrl}/api/products?token=${token}`);
+      const products = await response.json();
+      
+      const productsTable = document.querySelector("#productsTable tbody");
+      productsTable.innerHTML = ""; // Clear the table before adding new rows
+
+      products.forEach(product => {
+        const row = document.createElement("tr");
+        
+        row.innerHTML = `
+          <td>${product.name}</td>
+          <td>${product.description}</td>
+          <td>${product.price}</td>
+          <td>${product.price_unit}</td>
+          <td>${product.is_set ? "Yes" : "No"}</td>
+          <td>${product.show_on_site ? "Yes" : "No"}</td>
+          <td>${product.is_available ? "Yes" : "No"}</td>
+          <td><img src="${product.photo_url}" alt="Product Image" /></td>
+          <td>
+            <button class="btn" onclick="editProduct(${product.id})">Edit</button>
+            <button class="btn btn-danger" onclick="deleteProduct(${product.id})">Delete</button>
+          </td>
+        `;
+        
+        productsTable.appendChild(row);
+      });
+    }
+
+    // Function to add a new product
+    async function addProduct() {
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+      const price = document.getElementById("price").value;
+      const priceUnit = document.getElementById("price_unit").value;
+      const photo = document.getElementById("photo").files[0];
+      const isSet = document.getElementById("is_set").value === "true";
+      const showOnSite = document.getElementById("show_on_site").value === "true";
+      const isAvailable = document.getElementById("is_available").value === "true";
+
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("price_unit", priceUnit);
+      formData.append("is_set", isSet);
+      formData.append("show_on_site", showOnSite);
+      formData.append("is_available", isAvailable);
+      formData.append("photo", photo); // Add the image file
+
+      const response = await fetch(`${apiUrl}/api/product?token=${token}`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Product added successfully!");
+        resetForm();
+        fetchProducts(); // Refresh product list
+      } else {
+        alert("Failed to add product.");
+      }
+    }
+
+    // Function to delete a product
+    async function deleteProduct(id) {
+      const response = await fetch(`${apiUrl}/api/product/${id}?token=${token}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert("Product deleted successfully!");
+        fetchProducts(); // Refresh product list
+      } else {
+        alert("Failed to delete product.");
+      }
+    }
+
+    // Function to edit a product
+    async function editProduct(id) {
+      const response = await fetch(`${apiUrl}/api/product/${id}?token=${token}`);
+      const product = await response.json();
+
+      // Fill the form with the current product data
+      document.getElementById("name").value = product.name;
+      document.getElementById("description").value = product.description;
+      document.getElementById("price").value = product.price;
+      document.getElementById("price_unit").value = product.price_unit;
+      document.getElementById("is_set").value = String(!!product.is_set);
+      document.getElementById("show_on_site").value = String(!!product.show_on_site);
+      document.getElementById("is_available").value = String(!!product.is_available);
+      
+      // Show the current product image
+      const productImage = document.createElement("img");
+      productImage.src = product.photo_url;
+      productImage.alt = "Product Image";
+      productImage.style.width = "100px";
+      const preview = document.getElementById("editPreview");
+      preview.innerHTML = "";
+      preview.appendChild(productImage);
+
+      // Change the button action to update
+      const button = document.getElementById("addProductBtn");
+      button.textContent = "Update Product";
+      button.onclick = () => updateProduct(id);
+    }
+
+    // Function to update a product
+    async function updateProduct(id) {
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+      const price = document.getElementById("price").value;
+      const priceUnit = document.getElementById("price_unit").value;
+      const photo = document.getElementById("photo").files[0];
+      const isSet = document.getElementById("is_set").value === "true";
+      const showOnSite = document.getElementById("show_on_site").value === "true";
+      const isAvailable = document.getElementById("is_available").value === "true";
+
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("price_unit", priceUnit);
+      formData.append("is_set", isSet);
+      formData.append("show_on_site", showOnSite);
+      formData.append("is_available", isAvailable);
+      if (photo) {
+        formData.append("photo", photo);
+      }
+
+      const response = await fetch(`${apiUrl}/api/product/${id}?token=${token}`, {
+        method: "PUT",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Product updated successfully!");
+        resetForm();
+        fetchProducts(); // Refresh product list
+      } else {
+        alert("Failed to update product.");
+      }
+
+      // Reset the form and button
+      document.getElementById("addProductBtn").textContent = "Add Product";
+      document.getElementById("addProductBtn").onclick = addProduct;
+    }
+
+    function resetForm() {
+        document.getElementById("name").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("price_unit").value = "100 г";
+        document.getElementById("photo").value = "";
+
+        document.getElementById("is_set").value = "false";
+        document.getElementById("show_on_site").value = "true";
+        document.getElementById("is_available").value = "true";
+
+        const button = document.getElementById("addProductBtn");
+        button.textContent = "Add Product";
+        button.onclick = addProduct;
+
+        const oldImage = document.querySelector(".form-container img");
+        if (oldImage) oldImage.remove();
+
+        document.getElementById("editPreview").innerHTML = "";
+    }
+
+    // Add event listener to the add product button
+    document.getElementById("addProductBtn").onclick = addProduct;
+
+    document.getElementById("resetBtn").addEventListener("click", resetForm);
+
+    // Fetch products when the page loads
+    fetchProducts();
+  </script>
+</body>
+</html>

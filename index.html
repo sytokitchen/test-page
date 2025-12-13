@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FLBVCVDB7P"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FLBVCVDB7P');
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Сыто kitchen</title>
@@ -208,6 +218,116 @@
     @media (max-width: 540px){
       .text-box{max-width:92%; padding:14px 16px;}
     }
+
+    /* ===== Меню (карточки блюд) ===== */
+  .menu-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:16px;
+  }
+
+  .product-card{
+    background:rgba(0,0,0,0.25);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,0.25);
+    display:flex;
+    flex-direction:column;
+  }
+
+  .product-img{
+    width:100%;
+    aspect-ratio: 4 / 3;
+    background:rgba(255,255,255,0.06);
+    object-fit:cover;
+    display:block;
+  }
+
+  .product-body{
+    padding:14px 14px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .product-title{
+    margin:0;
+    font-size:18px;
+    font-weight:800;
+    color:var(--accent);
+    line-height:1.2;
+  }
+
+  .product-desc{
+    margin:0;
+    font-size:14px;
+    line-height:1.5;
+    color:#e7d6c8;
+    opacity:.95;
+  }
+
+  .product-meta{
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding-top:6px;
+  }
+
+  .product-price{
+    font-weight:800;
+    font-size:16px;
+    color:#fff;
+    white-space:nowrap;
+  }
+
+  .avail{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:700;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.06);
+    white-space:nowrap;
+  }
+
+  .dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    box-shadow:0 0 0 3px rgba(255,255,255,0.06) inset;
+  }
+
+  .dot.green{ background:#2ecc71; }
+  .dot.red{ background:#e74c3c; }
+
+  .menu-note{
+    max-width:860px;
+    margin:0 auto 18px;
+    text-align:left;
+    font-size:16px;
+    line-height:1.7;
+    color:#e7d6c8;
+    opacity:.95;
+  }
+
+  .menu-status{
+    text-align:center;
+    opacity:0.9;
+    font-size:15px;
+  }
+
+  .menu-error{
+    text-align:center;
+    opacity:0.95;
+    font-size:15px;
+    color:#ffd1d1;
+  }
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -221,6 +341,7 @@
         <ul>
           <li><a href="#home">Главная</a></li>
           <li><a href="#about">О нас</a></li>
+          <li><a href="#menu">Меню</a></li>
           <li><a href="#preorder">Предзаказ</a></li>
           <!-- <li><a href="#delivery">Доставка</a></li> -->
           <li><a href="#contact">Контакты</a></li>
@@ -255,6 +376,12 @@
         Каждый день мы стараемся готовить так, чтобы у вас всегда был выбор вкусных и домашних блюд для обеда или ужина.
         Мы ценим ваше время и хотим, чтобы еда радовала вас и вашу семью.
       </p>
+    </section>
+
+    <section id="menu" class="section">
+      <h3>Меню</h3>
+      <div id="menu-status" class="menu-status">Загружаем меню…</div>
+      <div id="menu-grid" class="menu-grid" aria-live="polite"></div>
     </section>
 
     <section id="preorder" class="section">
@@ -583,6 +710,104 @@
       }
     });
   }
+
+  // ===== Публичное меню с воркера =====
+  const MENU_API_URL = 'https://menu.syto-kitchen.workers.dev/api/menu';
+
+  const menuGrid = document.getElementById('menu-grid');
+  const menuStatus = document.getElementById('menu-status');
+
+  // если фото битое — ставим заглушку (можешь заменить на свою картинку)
+  const FALLBACK_IMG = 'photo_main1.jpg';
+
+  function escapeHtml(s){
+    return String(s ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#039;');
+  }
+
+  function formatPrice(price, unit){
+    if (price === null || price === undefined || price === '') return '';
+    const p = String(price).trim();
+    const u = String(unit).trim();
+    return `${p} ₽ / ${u}`;
+  }
+
+  function renderMenu(products){
+    if (!menuGrid) return;
+
+    // сортируем: сначала в наличии, потом нет
+    products.sort((a,b) => {
+      const avA = a.is_available ? 1 : 0;
+      const avB = b.is_available ? 1 : 0;
+      return avB - avA;
+    });
+
+    const html = products.map(p => {
+      const name = escapeHtml(p.name);
+      const desc = escapeHtml(p.description || '');
+      const price = formatPrice(p.price, p.price_unit);
+      const img = escapeHtml(p.photo_url || FALLBACK_IMG);
+
+      const available = !!p.is_available;
+      const dotClass = available ? 'green' : 'red';
+      const label = available ? 'В наличии' : 'Нет в наличии';
+
+      return `
+        <article class="product-card">
+          <img class="product-img" src="${img}" alt="${name}"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
+          <div class="product-body">
+            <h4 class="product-title">${name}</h4>
+            ${desc ? `<p class="product-desc">${desc}</p>` : `<p class="product-desc" style="opacity:.6">Описание скоро добавим.</p>`}
+            <div class="product-meta">
+              <span class="product-price">${price ? escapeHtml(price) : ''}</span>
+              <span class="avail"><span class="dot ${dotClass}"></span>${label}</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    menuGrid.innerHTML = html;
+  }
+
+  async function loadMenu(){
+    if (!menuGrid || !menuStatus) return;
+
+    menuStatus.textContent = 'Загружаем меню…';
+
+    try{
+      const res = await fetch(MENU_API_URL, { method: 'GET' });
+      if (!res.ok) {
+        const txt = await res.text().catch(()=> '');
+        throw new Error('HTTP ' + res.status + ' ' + txt);
+      }
+
+      const products = await res.json();
+
+      if (!Array.isArray(products) || products.length === 0){
+        menuStatus.innerHTML = '<div class="menu-status">Меню пока пустое.</div>';
+        menuGrid.innerHTML = '';
+        return;
+      }
+
+      menuStatus.textContent = '';
+      renderMenu(products);
+
+    } catch (err){
+      console.error(err);
+      menuStatus.innerHTML = '<div class="menu-error">Не удалось загрузить меню. Попробуйте обновить страницу.</div>';
+      menuGrid.innerHTML = '';
+    }
+  }
+
+  // грузим меню при загрузке страницы
+  window.addEventListener('load', loadMenu);
 </script>
 
 </body>
