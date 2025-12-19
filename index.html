@@ -7,7 +7,6 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-FLBVCVDB7P');
   </script>
 
@@ -84,6 +83,9 @@
       padding:60px 20px;
       max-width:1000px;
       margin:0 auto;
+    }
+    .section-menu{
+      max-width: 1400px;
     }
     .section h3{text-align:center; font-size:2em; color:var(--accent); margin-bottom:24px;}
     .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;}
@@ -174,7 +176,6 @@
       margin: 0;
     }
 
-
     /* Аудио-запись */
     .audio-controls{
       display:flex;
@@ -192,6 +193,13 @@
     }
     .btn-secondary:hover{
       background:rgba(255,255,255,0.2);
+    }
+    .btn-secondary,
+    .btn-secondary:visited,
+    .btn-secondary:hover,
+    .btn-secondary:active,
+    .btn-secondary:focus{
+      color: var(--text);
     }
 
     /* Разделитель для блока "Доставка" */
@@ -220,118 +228,217 @@
     }
 
     /* ===== Меню (карточки блюд) ===== */
-  .menu-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
-    gap:16px;
-  }
+    /* menu-grid теперь контейнер категорий (вертикально) */
+    #menu-grid{
+      display:block;
+    }
 
-  .product-card{
-    background:rgba(0,0,0,0.25);
-    border:1px solid rgba(255,255,255,0.10);
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 4px 12px rgba(0,0,0,0.25);
-    display:flex;
-    flex-direction:column;
-  }
+    .product-card{
+      background:rgba(0,0,0,0.25);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 4px 12px rgba(0,0,0,0.25);
+      display:flex;
+      flex-direction:column;
+      max-width: 320px;
+      width: 100%;
+    }
 
-  .product-img{
-    width:100%;
-    aspect-ratio: 4 / 3;
-    background:rgba(255,255,255,0.06);
-    object-fit:cover;
-    display:block;
-  }
+    .product-img{
+      width:100%;
+      aspect-ratio: 4 / 3;
+      background:rgba(255,255,255,0.06);
+      object-fit:cover;
+      display:block;
+    }
 
-  .product-body{
-    padding:14px 14px 12px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
+    .product-body{
+      padding:14px 14px 12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
 
-  .product-title{
-    margin:0;
-    font-size:18px;
-    font-weight:800;
-    color:var(--accent);
-    line-height:1.2;
-  }
+    .product-title{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+      color:var(--accent);
+      line-height:1.2;
+    }
 
-  .product-desc{
-    margin:0;
-    font-size:14px;
-    line-height:1.5;
-    color:#e7d6c8;
-    opacity:.95;
-  }
+    .product-desc{
+      margin:0;
+      font-size:14px;
+      line-height:1.5;
+      color:#e7d6c8;
+      opacity:.95;
+    }
 
-  .product-meta{
-    margin-top:auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding-top:6px;
-  }
+    .product-meta{
+      margin-top:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding-top:6px;
+    }
 
-  .product-price{
-    font-weight:800;
-    font-size:16px;
-    color:#fff;
-    white-space:nowrap;
-  }
+    .product-price{
+      font-weight:800;
+      font-size:16px;
+      color:#fff;
+      white-space:nowrap;
+    }
 
-  .avail{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    font-size:13px;
-    font-weight:700;
-    padding:6px 10px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,0.12);
-    background:rgba(255,255,255,0.06);
-    white-space:nowrap;
-  }
+    .avail{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      font-weight:700;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.06);
+      white-space:nowrap;
+    }
 
-  .dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    box-shadow:0 0 0 3px rgba(255,255,255,0.06) inset;
-  }
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      box-shadow:0 0 0 3px rgba(255,255,255,0.06) inset;
+    }
 
-  .dot.green{ background:#2ecc71; }
-  .dot.red{ background:#e74c3c; }
+    .dot.green{ background:#2ecc71; }
+    .dot.red{ background:#e74c3c; }
 
-  .menu-note{
-    max-width:860px;
-    margin:0 auto 18px;
-    text-align:left;
-    font-size:16px;
-    line-height:1.7;
-    color:#e7d6c8;
-    opacity:.95;
-  }
+    .menu-note{
+      max-width:860px;
+      margin:0 auto 18px;
+      text-align:left;
+      font-size:16px;
+      line-height:1.7;
+      color:#e7d6c8;
+      opacity:.95;
+    }
 
-  .menu-status{
-    text-align:center;
-    opacity:0.9;
-    font-size:15px;
-  }
+    .menu-status{
+      text-align:center;
+      opacity:0.9;
+      font-size:15px;
+    }
 
-  .menu-error{
-    text-align:center;
-    opacity:0.95;
-    font-size:15px;
-    color:#ffd1d1;
-  }
+    .menu-error{
+      text-align:center;
+      opacity:0.95;
+      font-size:15px;
+      color:#ffd1d1;
+    }
+
+    /* ===== Категории меню (аккордеон с анимацией) ===== */
+    .menu-category{
+      width:100%;
+      display:block;
+      margin: 18px 0 26px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      background: rgba(0,0,0,0.18);
+      overflow:hidden;
+    }
+
+    .category-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 16px 16px;
+      cursor:pointer;
+      user-select:none;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .category-header:hover{
+      background: rgba(255,255,255,0.06);
+    }
+
+    .category-title{
+      margin:0;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    .category-meta{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      opacity:.95;
+      white-space:nowrap;
+    }
+
+    .chevron{
+      display:inline-flex;
+      width: 32px;
+      height: 32px;
+      align-items:center;
+      justify-content:center;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      transform: rotate(0deg);
+      transition: transform .22s ease;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .menu-category.collapsed .chevron{
+      transform: rotate(-90deg);
+    }
+
+    /* Контейнер, который анимируем (height) */
+    .category-panel{
+      height: auto;
+      overflow: hidden;
+      transition: height .26s ease, opacity .20s ease;
+      opacity: 1;
+      will-change: height;
+    }
+
+    .menu-category.collapsed .category-panel{
+      opacity: 0;
+    }
+
+    .category-products{
+      display:grid;
+      gap:16px;
+      padding:16px;
+
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    @media (max-width: 1100px){
+      .category-products{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 780px){
+      .category-products{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 480px){
+      .category-products{ grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    }
   </style>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- Clockpicker (round clock) -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.5/jquery-clockpicker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.5/jquery-clockpicker.min.js"></script>
+
+
 </head>
+
 <body>
   <header>
     <div class="header-inner">
@@ -343,9 +450,7 @@
           <li><a href="#about">О нас</a></li>
           <li><a href="#menu">Меню</a></li>
           <li><a href="#preorder">Предзаказ</a></li>
-          <!-- <li><a href="#delivery">Доставка</a></li> -->
           <li><a href="#contact">Контакты</a></li>
-          <!-- <li><a class="btn" href="#order">Заказать</a></li> -->
         </ul>
       </nav>
     </div>
@@ -358,7 +463,7 @@
         <div class="text-panel">
           <div class="text-box">
             <h2>Куры гриль и свежая домашняя кухня</h2>
-            <p>Мы готовим каждый день из свежих продуктов: куры гриль, мясо, гарниры и салаты. Всё просто и вкусно — как дома. Доставка осуществляется через Яндекс Еду.</p>
+            <p>Мы готовим каждый день из свежих продуктов: куры гриль, мясо, гарниры и салаты. Всё просто и вкусно — как дома</p>
           </div>
         </div>
       </figure>
@@ -378,132 +483,97 @@
       </p>
     </section>
 
-    <section id="menu" class="section">
+    <section id="menu" class="section section-menu">
       <h3>Меню</h3>
       <div id="menu-status" class="menu-status">Загружаем меню…</div>
       <div id="menu-grid" class="menu-grid" aria-live="polite"></div>
     </section>
 
     <section id="preorder" class="section">
-	  <h3>Предзаказ</h3>
-	  <p class="preorder-intro">
-		Мы рады принять ваш заказ!
-    Пожалуйста, укажите ваше имя, номер телефона и желаемую дату получения.
-    Для удобства вы сможете выбрать один из готовых наборов или оформить индивидуальный заказ — просто опишите его в поле комментария.
-    Если вам удобнее, вы можете добавить голосовой комментарий.
-	  </p>
-	  <form id="preorder-form" class="preorder-form">
-		<div class="preorder-row">
-		  <label for="preorder-name">ФИО</label>
-		  <input id="preorder-name" name="name" type="text" required />
-		</div>
+      <h3>Предзаказ</h3>
+      <p class="preorder-intro">
+        Мы рады принять ваш заказ!
+        Пожалуйста, укажите ваше имя, номер телефона и желаемую дату получения.
+        Для удобства вы сможете выбрать один из готовых наборов или оформить индивидуальный заказ — просто опишите его в поле комментария.
+        Если вам удобнее, вы можете добавить голосовой комментарий.
+      </p>
+      <form id="preorder-form" class="preorder-form">
+        <div class="preorder-row">
+          <label for="preorder-name">ФИО</label>
+          <input id="preorder-name" name="name" type="text" required />
+        </div>
 
-		<div class="preorder-row">
-		  <label for="preorder-phone">Телефон (Россия)</label>
-		  <input
-			id="preorder-phone"
-			name="phone"
-			type="tel"
-			inputmode="tel"
-			required
-			placeholder="+7 (___) ___-__-__"
-		  />
-		</div>
+        <div class="preorder-row">
+          <label for="preorder-phone">Телефон (Россия)</label>
+          <input
+            id="preorder-phone"
+            name="phone"
+            type="tel"
+            inputmode="tel"
+            required
+            placeholder="+7 (___) ___-__-__"
+          />
+        </div>
 
-		<div class="preorder-row">
-		  <label for="preorder-date">Дата заказа</label>
-		  <input
-			id="preorder-date"
-			name="date"
-			type="text"
-			required
-			placeholder="Выберите дату"
-		  />
-		</div>
+        <div class="preorder-row">
+          <label for="preorder-date">Дата заказа</label>
+          <input
+            id="preorder-date"
+            name="date"
+            type="text"
+            required
+            placeholder="Выберите дату"
+          />
+        </div>
 
-    <div class="preorder-row">
+        <div class="preorder-row">
+          <label for="preorder-time">Время получения</label>
+          <input
+            id="preorder-time"
+            name="time"
+            type="text"
+            required
+            placeholder="Выберите время"
+          />
+          <small class="time-hint">Принимаем заказы с 11:00 до 22:00</small>
+        </div>
+
+        <div class="preorder-row" style="display:none">
           <label>Выберите один из готовых наборов или укажите свой вариант в комментарии.</label>
           <div class="set-options">
-            <label>
-              <input type="radio" name="set_choice" value="set1" checked>
-              Сет 1
-            </label>
-            <label>
-              <input type="radio" name="set_choice" value="set2">
-              Сет 2
-            </label>
-            <label>
-              <input type="radio" name="set_choice" value="set3">
-              Сет 3
-            </label>
-            <label>
-              <input type="radio" name="set_choice" value="set4">
-              Сет 4
-            </label>
-            <label>
-              <input type="radio" name="set_choice" value="set5">
-              Сет 5
-            </label>
-            <label>
-              <input type="radio" name="set_choice" value="custom">
-              Свой выбор
-            </label>
+            <label><input type="radio" name="set_choice" value="set1"> Сет 1</label>
+            <label><input type="radio" name="set_choice" value="set2"> Сет 2</label>
+            <label><input type="radio" name="set_choice" value="set3"> Сет 3</label>
+            <label><input type="radio" name="set_choice" value="set4"> Сет 4</label>
+            <label><input type="radio" name="set_choice" value="set5"> Сет 5</label>
+            <label><input type="radio" name="set_choice" value="custom" checked> Свой выбор</label>
           </div>
         </div>
 
-		<div class="preorder-row">
-		  <label for="preorder-comment">Комментарий к заказу</label>
-		  <textarea
-			id="preorder-comment"
-			name="comment"
-			rows="3"
-			style="overflow:hidden; resize:none;"
-			placeholder="Опишите желаемые блюда, время получения или другие детали."
-		  ></textarea>
-		</div>
-
-		<div class="preorder-row">
-		  <label>Голосовой комментарий (по желанию)</label>
-		  <div class="audio-controls">
-			<button type="button" class="btn btn-secondary" id="audio-record-btn">Записать</button>
-			<span class="audio-status" id="audio-status">Запись не добавлена</span>
-		  </div>
-		</div>
-
-		<div class="preorder-actions">
-		  <button type="submit" class="btn" id="preorder-submit-btn">Подтвердить предзаказ</button>
-		</div>
-	  </form>
-	</section>
-
-
-    <!-- <section id="delivery" class="section">
-      <h3>Доставка</h3>
-      <div class="grid">
-        <div class="card">
-          <h4>Яндекс Еда</h4>
-          <p class="muted">Быстрая и удобная доставка — горячие блюда приезжают в термоупаковке.</p>
+        <div class="preorder-row">
+          <label for="preorder-comment">Комментарий к заказу</label>
+          <textarea
+            id="preorder-comment"
+            name="comment"
+            rows="3"
+            style="overflow:hidden; resize:none;"
+            placeholder="Опишите желаемые блюда, время получения или другие детали."
+          ></textarea>
         </div>
-        <div class="card">
-          <h4>Самовывоз</h4>
-          <p class="muted">Сделайте заказ заранее и заберите без ожидания.</p>
+
+        <div class="preorder-row">
+          <label>Голосовой комментарий (по желанию)</label>
+          <div class="audio-controls">
+            <button type="button" class="btn btn-secondary" id="audio-record-btn">Записать</button>
+            <span class="audio-status" id="audio-status">Запись не добавлена</span>
+          </div>
         </div>
-        <div class="card">
-          <h4>Оплата</h4>
-          <p class="muted">Наличные, карта или онлайн-оплата.</p>
+
+        <div class="preorder-actions">
+          <button type="submit" class="btn" id="preorder-submit-btn">Подтвердить предзаказ</button>
         </div>
-      </div>
+      </form>
     </section>
-
-    <section id="order" class="section">
-      <h3>Сделать заказ</h3>
-      <p style="text-align:center; max-width:720px; margin:0 auto 18px;" class="muted">
-        Выбирайте блюда в приложении «Яндекс Еда» или свяжитесь с нами — мы соберём заказ для вас.
-      </p>
-      <div style="text-align:center; margin-top:8px;">
-        <a class="btn" href="#contact">Связаться</a>
-      </div>
-    </section> -->
 
     <section id="contact" class="section" style="background:#1F2421;">
       <h3>Контакты</h3>
@@ -517,7 +587,7 @@
   </main>
 
   <footer>© 2025 Сыто kitchen. Все права защищены.</footer>
-
+  
   <script>
   // Подгоняем высоту хэдера
   const hdr = document.querySelector('header');
@@ -548,11 +618,9 @@
   if (phoneInput) {
     phoneInput.addEventListener('input', () => {
       let digits = phoneInput.value.replace(/\D/g, '');
-
-      // если ввели 8 -> меняем на 7
       if (digits.startsWith('8')) digits = '7' + digits.slice(1);
-      if (!digits.startsWith('7')) digits = '7' + digits; // гарантируем +7
-      digits = digits.slice(0, 11); // максимум 11 цифр (7 + 10)
+      if (!digits.startsWith('7')) digits = '7' + digits;
+      digits = digits.slice(0, 11);
 
       let result = '+7';
       if (digits.length > 1) {
@@ -562,11 +630,9 @@
         if (digits.length > 7) result += '-' + digits.slice(7, 9);
         if (digits.length > 9) result += '-' + digits.slice(9, 11);
       }
-
       phoneInput.value = result;
     });
 
-    // при фокусе, если поле пустое — сразу ставим "+7 "
     phoneInput.addEventListener('focus', () => {
       if (!phoneInput.value.trim()) {
         phoneInput.value = '+7 ';
@@ -610,8 +676,43 @@
     flatpickr(dateInput, {
       dateFormat: 'd.m.Y',
       minDate: 'today'
-      // можно подключить локаль ru отдельно, если захочешь
     });
+  }
+
+  const timeInput = document.getElementById('preorder-time');
+  if (timeInput && window.jQuery && typeof jQuery(timeInput).clockpicker === 'function') {
+    jQuery(timeInput).clockpicker({
+      autoclose: true,
+      placement: 'bottom',
+      align: 'left',
+      donetext: 'Готово'
+    });
+
+    // обмеження 11:00 - 22:00
+    function parseHHMM(v){
+      const m = String(v || '').match(/^(\d{1,2}):(\d{2})$/);
+      if (!m) return null;
+      const h = Number(m[1]), min = Number(m[2]);
+      if (h < 0 || h > 23 || min < 0 || min > 59) return null;
+      return h * 60 + min;
+    }
+
+    function clampWorkHours(){
+      const t = parseHHMM(timeInput.value);
+      if (t === null) return;
+
+      const minT = 11 * 60;  // 11:00
+      const maxT = 22 * 60;  // 22:00
+
+      if (t < minT || t > maxT) {
+        alert('Пожалуйста, выберите время между 11:00 и 22:00');
+        timeInput.value = '';
+        timeInput.focus();
+      }
+    }
+
+    timeInput.addEventListener('change', clampWorkHours);
+    timeInput.addEventListener('blur', clampWorkHours);
   }
 
   // ===== Аудио-запись =====
@@ -633,7 +734,7 @@
       mediaRecorder.onstop = () => {
         if (audioChunks.length > 0) {
           recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          const seconds = Math.round(recordedBlob.size / 16000); // грубая оценка
+          const seconds = Math.round(recordedBlob.size / 16000);
           statusEl.textContent = 'Запись готова (примерно ' + seconds + ' сек.)';
         } else {
           statusEl.textContent = 'Запись не добавлена';
@@ -711,13 +812,13 @@
     });
   }
 
-  // ===== Публичное меню с воркера =====
+  // ===== Публичное меню (категории + аккордеон) =====
   const MENU_API_URL = 'https://menu.syto-kitchen.workers.dev/api/menu';
+  const CATEGORIES_API_URL = 'https://menu.syto-kitchen.workers.dev/api/categories';
 
   const menuGrid = document.getElementById('menu-grid');
   const menuStatus = document.getElementById('menu-status');
 
-  // если фото битое — ставим заглушку (можешь заменить на свою картинку)
   const FALLBACK_IMG = 'photo_main1.jpg';
 
   function escapeHtml(s){
@@ -732,48 +833,192 @@
   function formatPrice(price, unit){
     if (price === null || price === undefined || price === '') return '';
     const p = String(price).trim();
-    const u = String(unit).trim();
-    return `${p} ₽ / ${u}`;
+    const u = String(unit ?? '').trim();
+    return u ? `${p} ₽ / ${u}` : `${p} ₽`;
   }
 
-  function renderMenu(products){
+  function productCardHtml(p){
+    const name = escapeHtml(p.name);
+    const desc = escapeHtml(p.description || '');
+    const price = formatPrice(p.price, p.price_unit);
+    const img = escapeHtml(p.photo_url || FALLBACK_IMG);
+
+    const available = !!p.is_available;
+    const dotClass = available ? 'green' : 'red';
+    const label = available ? 'В наличии' : 'Нет в наличии';
+
+    return `
+      <article class="product-card">
+        <img class="product-img" src="${img}" alt="${name}"
+             loading="lazy"
+             onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
+        <div class="product-body">
+          <h4 class="product-title">${name}</h4>
+          ${desc ? `<p class="product-desc">${desc}</p>` : `<p class="product-desc" style="opacity:.6">Описание скоро добавим.</p>`}
+          <div class="product-meta">
+            <span class="product-price">${price ? escapeHtml(price) : ''}</span>
+            <span class="avail"><span class="dot ${dotClass}"></span>${label}</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function getCollapsedStateKey(categoryId){
+    return `menu_cat_collapsed_${categoryId}`;
+  }
+
+  function isCollapsed(categoryId){
+    return localStorage.getItem(getCollapsedStateKey(categoryId)) === '1';
+  }
+
+  function setCollapsed(categoryId, value){
+    localStorage.setItem(getCollapsedStateKey(categoryId), value ? '1' : '0');
+  }
+
+  // ---- Accordion animation helpers (height transition) ----
+  function openPanel(section){
+    const panel = section.querySelector('.category-panel');
+    if (!panel) return;
+
+    // start from current height (0) -> target height (scrollHeight)
+    panel.style.height = panel.scrollHeight + 'px';
+
+    // after transition end set to auto to allow dynamic content
+    const onEnd = (e) => {
+      if (e.propertyName !== 'height') return;
+      panel.style.height = 'auto';
+      panel.removeEventListener('transitionend', onEnd);
+    };
+    panel.addEventListener('transitionend', onEnd);
+  }
+
+  function closePanel(section){
+    const panel = section.querySelector('.category-panel');
+    if (!panel) return;
+
+    // if auto -> set explicit px first, then animate to 0
+    panel.style.height = panel.scrollHeight + 'px';
+    // force reflow
+    panel.offsetHeight;
+    panel.style.height = '0px';
+  }
+
+  function applyInitialPanelState(section, collapsed){
+    const panel = section.querySelector('.category-panel');
+    const header = section.querySelector('.category-header');
+    if (!panel || !header) return;
+
+    if (collapsed) {
+      section.classList.add('collapsed');
+      header.setAttribute('aria-expanded', 'false');
+      panel.style.height = '0px';
+    } else {
+      section.classList.remove('collapsed');
+      header.setAttribute('aria-expanded', 'true');
+      panel.style.height = 'auto';
+    }
+  }
+
+  function toggleCategory(section){
+    const header = section.querySelector('.category-header');
+    const id = section.getAttribute('data-category-id');
+
+    const willCollapse = !section.classList.contains('collapsed');
+
+    if (willCollapse) {
+      // collapsing
+      section.classList.add('collapsed');
+      header.setAttribute('aria-expanded', 'false');
+      setCollapsed(id, true);
+      closePanel(section);
+    } else {
+      // expanding
+      section.classList.remove('collapsed');
+      header.setAttribute('aria-expanded', 'true');
+      setCollapsed(id, false);
+
+      const panel = section.querySelector('.category-panel');
+      if (panel) {
+        // set from 0 -> scrollHeight
+        panel.style.height = '0px';
+        panel.offsetHeight;
+      }
+      openPanel(section);
+    }
+  }
+
+  function renderGroupedMenu(categories, products){
     if (!menuGrid) return;
 
-    // сортируем: сначала в наличии, потом нет
-    products.sort((a,b) => {
-      const avA = a.is_available ? 1 : 0;
-      const avB = b.is_available ? 1 : 0;
-      return avB - avA;
-    });
+    const cats = Array.isArray(categories) ? categories.slice() : [];
+    const prods = Array.isArray(products) ? products.slice() : [];
 
-    const html = products.map(p => {
-      const name = escapeHtml(p.name);
-      const desc = escapeHtml(p.description || '');
-      const price = formatPrice(p.price, p.price_unit);
-      const img = escapeHtml(p.photo_url || FALLBACK_IMG);
+    cats.sort((a,b) => (Number(a.display_order ?? 0) - Number(b.display_order ?? 0)) || (Number(a.id) - Number(b.id)));
+    prods.sort((a,b) => (Number(a.display_order ?? 0) - Number(b.display_order ?? 0)) || (Number(a.id) - Number(b.id)));
 
-      const available = !!p.is_available;
-      const dotClass = available ? 'green' : 'red';
-      const label = available ? 'В наличии' : 'Нет в наличии';
+    const byCat = new Map();
+    for (const p of prods) {
+      const cid = p.category_id ?? null;
+      if (!byCat.has(cid)) byCat.set(cid, []);
+      byCat.get(cid).push(p);
+    }
+
+    const uncategorized = byCat.get(null) || byCat.get(undefined);
+    const hasUncat = Array.isArray(uncategorized) && uncategorized.length > 0;
+
+    const finalCats = cats.slice();
+    if (hasUncat) {
+      finalCats.push({ id: 'uncat', name: 'Без категории', display_order: 999999999 });
+    }
+
+    const html = finalCats.map(c => {
+      const cid = c.id;
+      const title = escapeHtml(c.name || 'Категория');
+      const list = (cid === 'uncat') ? uncategorized : (byCat.get(cid) || []);
+
+      if (!list || list.length === 0) return '';
+
+      const collapsed = isCollapsed(cid);
 
       return `
-        <article class="product-card">
-          <img class="product-img" src="${img}" alt="${name}"
-              loading="lazy"
-              onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
-          <div class="product-body">
-            <h4 class="product-title">${name}</h4>
-            ${desc ? `<p class="product-desc">${desc}</p>` : `<p class="product-desc" style="opacity:.6">Описание скоро добавим.</p>`}
-            <div class="product-meta">
-              <span class="product-price">${price ? escapeHtml(price) : ''}</span>
-              <span class="avail"><span class="dot ${dotClass}"></span>${label}</span>
+        <section class="menu-category ${collapsed ? 'collapsed' : ''}" data-category-id="${escapeHtml(cid)}">
+          <div class="category-header" role="button" tabindex="0" aria-expanded="${collapsed ? 'false' : 'true'}">
+            <h4 class="category-title">${title}</h4>
+            <div class="category-meta">
+              <span class="chevron">▾</span>
             </div>
           </div>
-        </article>
+
+          <div class="category-panel">
+            <div class="category-products">
+              ${list.map(productCardHtml).join('')}
+            </div>
+          </div>
+        </section>
       `;
     }).join('');
 
-    menuGrid.innerHTML = html;
+    menuGrid.innerHTML = html || '';
+
+    // Attach handlers + apply initial states correctly
+    menuGrid.querySelectorAll('.menu-category').forEach(section => {
+      const header = section.querySelector('.category-header');
+      const cid = section.getAttribute('data-category-id');
+      const collapsed = isCollapsed(cid);
+
+      applyInitialPanelState(section, collapsed);
+
+      const onToggle = () => toggleCategory(section);
+
+      header.addEventListener('click', onToggle);
+      header.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onToggle();
+        }
+      });
+    });
   }
 
   async function loadMenu(){
@@ -782,13 +1027,23 @@
     menuStatus.textContent = 'Загружаем меню…';
 
     try{
-      const res = await fetch(MENU_API_URL, { method: 'GET' });
-      if (!res.ok) {
-        const txt = await res.text().catch(()=> '');
-        throw new Error('HTTP ' + res.status + ' ' + txt);
+      const [catsRes, menuRes] = await Promise.all([
+        fetch(CATEGORIES_API_URL, { method: 'GET' }),
+        fetch(MENU_API_URL, { method: 'GET' }),
+      ]);
+
+      if (!catsRes.ok) {
+        const txt = await catsRes.text().catch(()=> '');
+        throw new Error('Categories HTTP ' + catsRes.status + ' ' + txt);
       }
 
-      const products = await res.json();
+      if (!menuRes.ok) {
+        const txt = await menuRes.text().catch(()=> '');
+        throw new Error('Menu HTTP ' + menuRes.status + ' ' + txt);
+      }
+
+      const categories = await catsRes.json();
+      const products = await menuRes.json();
 
       if (!Array.isArray(products) || products.length === 0){
         menuStatus.innerHTML = '<div class="menu-status">Меню пока пустое.</div>';
@@ -797,7 +1052,15 @@
       }
 
       menuStatus.textContent = '';
-      renderMenu(products);
+      renderGroupedMenu(categories, products);
+
+      // Recalculate open panels on resize (grid height can change)
+      window.addEventListener('resize', () => {
+        document.querySelectorAll('.menu-category:not(.collapsed) .category-panel').forEach(panel => {
+          // keep auto for open panels
+          panel.style.height = 'auto';
+        });
+      });
 
     } catch (err){
       console.error(err);
@@ -806,9 +1069,8 @@
     }
   }
 
-  // грузим меню при загрузке страницы
   window.addEventListener('load', loadMenu);
-</script>
+  </script>
 
 </body>
 </html>
