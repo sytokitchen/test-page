@@ -50,10 +50,22 @@
     }
     nav ul{list-style:none; display:flex; gap:12px; margin:0; padding:0; flex-wrap:wrap;}
     nav a{
-      display:inline-block; padding:8px 12px; border-radius:10px; text-decoration:none; color:#fff; font-weight:600;
-      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:10px;
+      text-decoration:none;
+
+      font-weight:600;
+      color: var(--text);
+
+      background: rgba(0,0,0,0.10);
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 0 1px rgba(212,175,55,0.18) inset;
     }
-    nav a:hover{background:rgba(255,255,255,0.15);}
+
+    nav a:hover{
+      background: rgba(212,175,55,0.12);
+    }
     .btn{
       background:var(--dark-olive); color:#fff; padding:10px 16px;
       border-radius:10px; border:none; cursor:pointer; font-weight:bold;
@@ -427,6 +439,49 @@
     @media (max-width: 480px){
       .category-products{ grid-template-columns: repeat(1, minmax(0, 1fr)); }
     }
+
+    .site-warning{
+      max-width: 860px;
+      margin: 24px auto 0;
+      padding: 14px 16px;
+      font-size: 20px;
+      line-height: 1.6;
+      text-align: left;
+
+      color: #e30707;
+      background: rgba(200, 60, 60, 0.12);
+      border: 1px solid rgba(200, 60, 60, 0.35);
+      border-radius: 14px;
+    }
+
+    .about-accent{
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 auto 18px;
+      max-width: 860px;
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .about-accent::before{
+      content: none;
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 4px;
+      border-radius: 4px;
+      background: var(--accent);
+    }
+
+    .about-subtitle{
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 28px auto 12px;
+      max-width: 860px;
+    }
   </style>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -442,7 +497,7 @@
 <body>
   <header>
     <div class="header-inner">
-      <div class="brand"><h1>Сыто kitchen</h1></div>
+      <div class="brand"><h1>СыТО kitchen</h1></div>
       <nav aria-label="Главное меню">
         <button class="menu-toggle" aria-expanded="false" aria-label="Меню">≡</button>
         <ul>
@@ -460,26 +515,51 @@
     <section class="hero" aria-label="Главное фото">
       <figure class="hero-figure">
         <img src="photo_main1.jpg" alt="Главное фото">
-        <div class="text-panel">
+        <!-- <div class="text-panel">
           <div class="text-box">
             <h2>Куры гриль и свежая домашняя кухня</h2>
             <p>Мы готовим каждый день из свежих продуктов: куры гриль, мясо, гарниры и салаты. Всё просто и вкусно — как дома</p>
-          </div>
+          </div> -->
         </div>
       </figure>
     </section>
 
+    <section>
+      <h3 class="site-warning">
+        Полное наполнение сайта находиться в разработке. Сейчас в меню доступны только блюда для предзаказа.
+        После нового года на сайте будет доступен весь наш ассортимент.
+      </h3>
+    </section>
+
     <section id="about" class="section">
       <h3>О нас</h3>
-      <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:0 auto;">
-        <strong>Сыто kitchen</strong> — домашняя кухня с акцентом на качество и стабильный вкус. Мы закупаем продукты
-        небольшими партиями, чтобы они всегда оставались свежими. Мясо маринуем и готовим на гриле, гарниры и салаты
-        делаем заранее небольшими партиями и предлагаем в течение дня.
+      <p class="about-subtitle">
+        Сытная домашняя кухня вне дома.
       </p>
       <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:18px auto 0;">
-        Наше меню простое и понятное: куры гриль с золотистой корочкой, ароматные мясные блюда, сытные гарниры и свежие салаты.
-        Каждый день мы стараемся готовить так, чтобы у вас всегда был выбор вкусных и домашних блюд для обеда или ужина.
-        Мы ценим ваше время и хотим, чтобы еда радовала вас и вашу семью.
+        <strong>СыТО kitchen</strong> кухня на каждый день, где главное — вкус, качество и стабильность.
+          Мы готовим из высококачественного сырья: куры гриль, мясные блюда, гарниры и салаты.
+          Привычные вкусы, которые хочется возвращать в свой день.
+          Просто. Честно. Вовремя.
+      </p>
+      <h4 class="about-subtitle">
+        О проекте
+      </h4>
+      <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:18px auto 0;">
+        <strong>СыТО kitchen</strong> - домашняя кухня домашний продукт с фокусом на качество. 
+          Мы закупаем ингредиенты небольшими партиями и готовим ежедневно. 
+          Еда всегда свежая. Живая.
+      </p>
+      <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:18px auto 0;">
+        Наше меню понятное: 
+          курица гриль, сытные мясные блюда, простые гарниры и свежие салаты.
+          Без лишнего — только то, что действительно хочется есть каждый день.
+          И, конечно, хороший кофе.
+      </p>
+      <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:18px auto 0;">
+        <strong>СыТО kitchen</strong> - когда не нужно выбирать между «быстро» и «вкусно».
+          Еда для обеда, ужина и дома.
+          Для вас и вашей семьи. Без лишних добавок. Мы готовим то, что сами едим!
       </p>
     </section>
 
@@ -490,11 +570,11 @@
     </section>
 
     <section id="preorder" class="section">
-      <h3>Предзаказ</h3>
+      <h3>Предзаказ (самовывоз)</h3>
       <p class="preorder-intro">
         Мы рады принять ваш заказ!
-        Пожалуйста, укажите ваше имя, номер телефона и желаемую дату получения.
-        Для удобства вы сможете выбрать один из готовых наборов или оформить индивидуальный заказ — просто опишите его в поле комментария.
+        Пожалуйста, укажите ваше имя, номер телефона и желаемую дату и время получения.
+        Просто опишите ваш заказ в поле заказа.
         Если вам удобнее, вы можете добавить голосовой комментарий.
       </p>
       <form id="preorder-form" class="preorder-form">
@@ -551,7 +631,7 @@
         </div>
 
         <div class="preorder-row">
-          <label for="preorder-comment">Комментарий к заказу</label>
+          <label for="preorder-comment">Заказ</label>
           <textarea
             id="preorder-comment"
             name="comment"
@@ -580,13 +660,26 @@
       <p style="text-align:center; font-size:18px;">📍 Санкт-Петербург, Кудрово, ул. Строителей, 16</p>
       <p style="text-align:center; font-size:18px;">📞 +7 (950) 037-13-96</p>
       <p style="text-align:center; font-size:18px;">🕒 Ежедневно 11:00 — 22:00</p>
-      <div style="margin-top:20px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.12);">
+      <!-- <div>
+        <iframe src="https://yandex.ru/sprav/widget/155493913207" width="100%" height="340" frameborder="0"></iframe>
+      </div> -->
+  <div style="border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.12);">
+    <iframe
+      title="Yandex Map — СыТО kitchen"
+      src="https://yandex.com/map-widget/v1/?ll=30.522317%2C59.909144&z=22&pt=30.522317,59.909144,pm2rdm"
+      width="100%"
+      height="430"
+      frameborder="0"
+      allowfullscreen>
+    </iframe>
+  </div>
+      <!-- <div style="margin-top:20px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.12);">
         <iframe title="Yandex Map — Санкт-Петербург, Кудрово, ул. Строителей, 16" src="https://yandex.com/map-widget/v1/?mode=search&z=15&text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%9A%D1%83%D0%B4%D1%80%D0%BE%D0%B2%D0%BE%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%A1%D1%82%D1%80%D0%BE%D0%B8%D1%82%D0%B5%D0%BB%D0%B5%D0%B9%2C%2016" width="100%" height="430" frameborder="0" allowfullscreen></iframe>
-      </div>
+      </div> -->
     </section>
   </main>
 
-  <footer>© 2025 Сыто kitchen. Все права защищены.</footer>
+  <footer>© 2025 СыТО kitchen. Все права защищены.</footer>
   
   <script>
   // Подгоняем высоту хэдера
@@ -819,7 +912,7 @@
   const menuGrid = document.getElementById('menu-grid');
   const menuStatus = document.getElementById('menu-status');
 
-  const FALLBACK_IMG = 'photo_main1.jpg';
+  const FALLBACK_IMG = 'syto_cat.jpg';
 
   function escapeHtml(s){
     return String(s ?? '')
