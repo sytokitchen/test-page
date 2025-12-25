@@ -495,9 +495,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <!-- Clockpicker (round clock) -->
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.5/jquery-clockpicker.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.5/jquery-clockpicker.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.5/jquery-clockpicker.min.js"></script>
 
 
 </head>
@@ -787,31 +787,41 @@
     });
   }
 
- // ===== Time picker (flatpickr) =====
-const timeInput = document.getElementById('preorder-time');
-if (timeInput && typeof flatpickr !== 'undefined') {
-  flatpickr(timeInput, {
-    enableTime: true,
-    noCalendar: true,
-    dateFormat: 'H:i',
-    time_24hr: true,
-    minuteIncrement: 5,
-    allowInput: true,
-    minTime: '11:00',
-    maxTime: '22:00',
+  const timeInput = document.getElementById('preorder-time');
+  if (timeInput && window.jQuery && typeof jQuery(timeInput).clockpicker === 'function') {
+    jQuery(timeInput).clockpicker({
+      autoclose: true,
+      placement: 'bottom',
+      align: 'left',
+      donetext: 'Готово'
+    });
 
-    disableMobile: true,
+    // обмеження 11:00 - 22:00
+    function parseHHMM(v){
+      const m = String(v || '').match(/^(\d{1,2}):(\d{2})$/);
+      if (!m) return null;
+      const h = Number(m[1]), min = Number(m[2]);
+      if (h < 0 || h > 23 || min < 0 || min > 59) return null;
+      return h * 60 + min;
+    }
 
-    onClose: (_, timeStr) => {
-      if (!timeStr) return;
-      if (timeStr < '11:00' || timeStr > '22:00') {
+    function clampWorkHours(){
+      const t = parseHHMM(timeInput.value);
+      if (t === null) return;
+
+      const minT = 11 * 60;  // 11:00
+      const maxT = 22 * 60;  // 22:00
+
+      if (t < minT || t > maxT) {
         alert('Пожалуйста, выберите время между 11:00 и 22:00');
         timeInput.value = '';
         timeInput.focus();
       }
     }
-  });
-}
+
+    timeInput.addEventListener('change', clampWorkHours);
+    timeInput.addEventListener('blur', clampWorkHours);
+  }
 
   // ===== Аудио-запись =====
   const recordBtn = document.getElementById('audio-record-btn');
@@ -919,6 +929,28 @@ if (timeInput && typeof flatpickr !== 'undefined') {
 
   const FALLBACK_IMG = 'syto_cat.jpg';
 
+  const STATIC_CATEGORIES = [
+    { id: 1, name: "Салаты", display_order: 1 }, { id: 2, name: "Горячие блюда", display_order: 2 }, { id: 3, name: "Блины", display_order: 3 }, { id: 4, name: "Паста и крупы", display_order: 4 }, { id: 5, name: "Гарниры", display_order: 5 }, { id: 7, name: "Зразы и изделия из теста", display_order: 6 }, { id: 8, name: "Десерты и напитки", display_order: 7 }, { id: 6, name: "Салаты и холодные закуски", display_order: 10000 }
+  ];
+
+  const STATIC_PRODUCTS = [ { id: 22, name: "\"Шуба\" (Сельдь под шубой)", description: "Сельдь соленая (филе), отварной картофель, отварная морковь, отварная свекла, яйца отварные, майонез", price: 115, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765820629499_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 1 }, { id: 19, name: "Оливье", description: "Картофель, колбаса докторская, яйца, морковь, колбаса салями, огурцы маринованные, горошек консервированный, майонез, соль", price: 125, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821383366_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 2 }, { id: 10, name: "Винегрет", description: "Свекла, картофель, морковь, огурцы маринованные, горошек, красный лук, масло растительное, соль", price: 75, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765819895851_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 3 }, { id: 15, name: "Крабовый салат", description: "Крабовое мясо, рис, яйца, кукуруза консервированная, огурец свежий, майонез, соль", price: 140, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765820793720_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 4 }, { id: 20, name: "Свекла с фетой", description: "Свёкла, фета, чеснок, масло растительное, соль", price: 80, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 5 }, { id: 23, name: "Витаминный салат", description: "Белокочанная капуста, морковь, красная капуста, растительное масло (оливковое, подсолнечное), лимонный сок (или уксус), соль, сахар — по вкусу", price: 65, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 6 }, { id: 48, name: "Охотничий салат", description: "Охотничьи колбаски, корейская морковка, картофель, яйца, полутвердый сыр, маринованный огурец, майонез, соль, перец", price: 125, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 8 }, { id: 49, name: "Квашеная капуста", description: "Капуста, морковь, сахар, соль", price: 60, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 9 }, { id: 50, name: "Морковь по-корейски", description: "Морковь, чеснок, растительное масло, уксус, сахар, соль, кориандр, острый перец", price: 70, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 10 }, { id: 51, name: "Салат \"СыТО\"", description: "Филе куриного бедра, шампиньоны, твёрдый сыр, помидоры, лук, чеснок, майонез, соль, перец", price: 210, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 11 }, { id: 31, name: "Кура гриль целая", description: "Курица охлаждённая, маринад (чеснок, специи)", price: 800, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "шт", category_id: 2, display_order: 1 } ];
+
+  // Принудительно: всем блюдам одна картинка из корня проекта
+  function normalizeStaticData(categories, products){
+    const cats = (Array.isArray(categories) ? categories : []).map(c => ({
+      id: c.id,
+      name: c.name,
+      display_order: c.display_order ?? 0,
+    }));
+
+    const prods = (Array.isArray(products) ? products : []).map(p => ({
+      ...p,
+      photo_url: FALLBACK_IMG, // <- всем дефолт
+    }));
+
+    return { cats, prods };
+  }
+
   function escapeHtml(s){
     return String(s ?? '')
       .replaceAll('&','&amp;')
@@ -939,7 +971,8 @@ if (timeInput && typeof flatpickr !== 'undefined') {
     const name = escapeHtml(p.name);
     const desc = escapeHtml(p.description || '');
     const price = formatPrice(p.price, p.price_unit);
-    const img = escapeHtml(p.photo_url || FALLBACK_IMG);
+    // const img = escapeHtml(p.photo_url || FALLBACK_IMG);
+    const img = FALLBACK_IMG;
 
     const available = !!p.is_available;
     const dotClass = available ? 'green' : 'red';
@@ -1119,52 +1152,26 @@ if (timeInput && typeof flatpickr !== 'undefined') {
     });
   }
 
-  async function loadMenu(){
+  function loadMenu(){
     if (!menuGrid || !menuStatus) return;
 
-    menuStatus.textContent = 'Загружаем меню…';
+    const { cats, prods } = normalizeStaticData(STATIC_CATEGORIES, STATIC_PRODUCTS);
 
-    try{
-      const [catsRes, menuRes] = await Promise.all([
-        fetch(CATEGORIES_API_URL, { method: 'GET' }),
-        fetch(MENU_API_URL, { method: 'GET' }),
-      ]);
-
-      if (!catsRes.ok) {
-        const txt = await catsRes.text().catch(()=> '');
-        throw new Error('Categories HTTP ' + catsRes.status + ' ' + txt);
-      }
-
-      if (!menuRes.ok) {
-        const txt = await menuRes.text().catch(()=> '');
-        throw new Error('Menu HTTP ' + menuRes.status + ' ' + txt);
-      }
-
-      const categories = await catsRes.json();
-      const products = await menuRes.json();
-
-      if (!Array.isArray(products) || products.length === 0){
-        menuStatus.innerHTML = '<div class="menu-status">Меню пока пустое.</div>';
-        menuGrid.innerHTML = '';
-        return;
-      }
-
-      menuStatus.textContent = '';
-      renderGroupedMenu(categories, products);
-
-      // Recalculate open panels on resize (grid height can change)
-      window.addEventListener('resize', () => {
-        document.querySelectorAll('.menu-category:not(.collapsed) .category-panel').forEach(panel => {
-          // keep auto for open panels
-          panel.style.height = 'auto';
-        });
-      });
-
-    } catch (err){
-      console.error(err);
-      menuStatus.innerHTML = '<div class="menu-error">Не удалось загрузить меню. Попробуйте обновить страницу.</div>';
+    if (!Array.isArray(prods) || prods.length === 0){
+      menuStatus.innerHTML = '<div class="menu-status">Меню пока пустое.</div>';
       menuGrid.innerHTML = '';
+      return;
     }
+
+    menuStatus.textContent = '';
+    renderGroupedMenu(cats, prods);
+
+    // Recalculate open panels on resize (grid height can change)
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.menu-category:not(.collapsed) .category-panel').forEach(panel => {
+        panel.style.height = 'auto';
+      });
+    });
   }
 
   window.addEventListener('load', loadMenu);
