@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Google tag (gtag.js) -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FLBVCVDB7P"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -10,1171 +10,222 @@
     gtag('config', 'G-FLBVCVDB7P');
   </script>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Сыто kitchen</title>
-  <style>
-    :root{
-      --off-black:#1F2421;
-      --dark-olive:#4B5311;
-      --olive-metallic:#4A4F39;
-      --dark-wood:#3E2F23;
-      --accent:#D4AF37;
-      --text:#f5f5f5;
-      --header-h:72px;
-    }
-    html{scroll-behavior:smooth;}
-    *{box-sizing:border-box;}
-    body{
-      margin:0;
-      font-family:Arial, sans-serif;
-      background:var(--off-black);
-      color:var(--text);
-      overflow-x:hidden;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>СыТО — домашняя кухня с доставкой</title>
 
-    header{
-      position:fixed; top:0; left:0; right:0; z-index:2000;
-      height:var(--header-h); background:var(--dark-wood);
-    }
-    .header-inner{
-      max-width:1100px; margin:0 auto; height:100%;
-      padding:12px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px;
-    }
-    .brand h1{margin:0; color:var(--accent); font-size:22px; letter-spacing:.5px; white-space:nowrap}
-    nav{position:relative}
-    .menu-toggle{
-      display:none; align-items:center; justify-content:center;
-      width:44px; height:44px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06); color:#fff; font-size:20px; line-height:1; cursor:pointer;
-    }
-    nav ul{list-style:none; display:flex; gap:12px; margin:0; padding:0; flex-wrap:wrap;}
-    nav a{
-      display:inline-block;
-      padding:8px 12px;
-      border-radius:10px;
-      text-decoration:none;
-
-      font-weight:600;
-      color: var(--text);
-
-      background: rgba(0,0,0,0.10);
-      border: 1px solid var(--accent);
-      box-shadow: 0 0 0 1px rgba(212,175,55,0.18) inset;
-    }
-
-    nav a:hover{
-      background: rgba(212,175,55,0.12);
-    }
-    .btn{
-      background:var(--dark-olive); color:#fff; padding:10px 16px;
-      border-radius:10px; border:none; cursor:pointer; font-weight:bold;
-    }
-    .btn:hover{background:var(--olive-metallic);}
-
-    main{margin:0; padding:0;}
-    .hero, .section{scroll-margin-top:calc(var(--header-h) + 14px);}
-
-    .hero{margin-top:var(--header-h);}
-    .hero-figure{position:relative; width:100%; line-height:0; margin:0;}
-    .hero-figure img{width:100%; height:auto; display:block;}
-
-    .text-panel{
-      position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:2;
-      padding:0 20px; line-height:normal;
-    }
-    .text-box{
-      max-width:860px; padding:16px 18px; border-radius:14px;
-      background:rgba(0,0,0,0.38); backdrop-filter:saturate(120%) blur(2px);
-      line-height:1.4;
-    }
-    .hero h2{margin:0 0 14px 0; color:#fff; font-size:clamp(30px,5vw,56px); font-weight:800; line-height:1.15;}
-    .hero p{margin:0; color:#fff; font-size:clamp(16px,2.2vw,22px); line-height:1.55;}
-
-    .section{
-      padding:60px 20px;
-      max-width:1000px;
-      margin:0 auto;
-    }
-    .section-menu{
-      max-width: 1400px;
-    }
-    .section h3{text-align:center; font-size:2em; color:var(--accent); margin-bottom:24px;}
-    .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;}
-    .card{
-      background:rgba(0,0,0,0.25);
-      border:1px solid rgba(255,255,255,0.1);
-      border-radius:16px;
-      padding:16px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.25);
-    }
-    .card h4{margin:0 0 8px; color:var(--accent);}
-    .muted{color:#e7d6c8; opacity:.95;}
-    footer{text-align:center; background:var(--dark-wood); color:var(--accent); padding:15px;}
-
-    /* Предзаказ - форма */
-    #preorder{
-      background:rgba(0,0,0,0.18);
-      border-radius:18px;
-      margin-top:20px;
-      margin-bottom:40px;
-    }
-    .preorder-intro{
-      text-align:left;
-      font-size:18px;
-      line-height:1.8;
-      max-width:860px;
-      margin:0 auto 24px;
-    }
-    .preorder-form{
-      max-width:720px;
-      margin:0 auto;
-      display:grid;
-      gap:16px;
-    }
-    .preorder-row{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .preorder-row label{
-      font-size:15px;
-      font-weight:600;
-    }
-    .preorder-row input,
-    .preorder-row textarea{
-      width:100%;
-      padding:10px 12px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.18);
-      background:rgba(0,0,0,0.3);
-      color:var(--text);
-      font-size:15px;
-      font-family:inherit;
-    }
-    .preorder-row input::placeholder,
-    .preorder-row textarea::placeholder{
-      color:rgba(245,245,245,0.6);
-    }
-    .preorder-row small{
-      font-size:13px;
-      opacity:0.8;
-    }
-    .preorder-actions{
-      margin-top:6px;
-      display:flex;
-      justify-content:flex-start;
-    }
-    .set-options {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 4px;
-      align-items: flex-start;
-    }
-    .set-options label {
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 8px;
-      white-space: nowrap;
-      font-size: 14px;
-      width: auto;
-      text-align: left;
-    }
-    .set-options input[type="radio"] {
-      cursor: pointer;
-      accent-color: var(--accent);
-      margin: 0;
-    }
-
-    /* Аудио-запись */
-    .audio-controls{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-    .audio-status{
-      font-size:14px;
-      opacity:0.9;
-    }
-    .btn-secondary{
-      background:rgba(255,255,255,0.1);
-      border:1px solid rgba(255,255,255,0.25);
-    }
-    .btn-secondary:hover{
-      background:rgba(255,255,255,0.2);
-    }
-    .btn-secondary,
-    .btn-secondary:visited,
-    .btn-secondary:hover,
-    .btn-secondary:active,
-    .btn-secondary:focus{
-      color: var(--text);
-    }
-
-    /* Разделитель для блока "Доставка" */
-    #delivery{
-      border-top:1px solid rgba(255,255,255,0.06);
-      padding-top:40px;
-      margin-top:10px;
-    }
-
-    @media (max-width: 860px){
-      .menu-toggle{display:flex}
-      nav ul{
-        position:absolute; top:calc(100% + 10px); right:0; left:auto;
-        display:flex; flex-direction:column; gap:10px;
-        background:rgba(33,33,33,.96); border:1px solid rgba(255,255,255,.12);
-        border-radius:14px; padding:12px; width:min(86vw, 320px);
-        transform:scale(.98); opacity:0; pointer-events:none;
-        transition:opacity .18s ease, transform .18s ease;
-      }
-      nav.open ul{opacity:1; transform:scale(1); pointer-events:auto}
-      nav a{width:100%; text-align:left}
-    }
-
-    @media (max-width: 540px){
-      .text-box{max-width:92%; padding:14px 16px;}
-    }
-
-    /* ===== Меню (карточки блюд) ===== */
-    /* menu-grid теперь контейнер категорий (вертикально) */
-    #menu-grid{
-      display:block;
-    }
-
-    .product-card{
-      background:rgba(0,0,0,0.25);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius:16px;
-      overflow:hidden;
-      box-shadow:0 4px 12px rgba(0,0,0,0.25);
-      display:flex;
-      flex-direction:column;
-      max-width: 320px;
-      width: 100%;
-    }
-
-    .product-img{
-      width:100%;
-      aspect-ratio: 4 / 3;
-      background:rgba(255,255,255,0.06);
-      object-fit:cover;
-      display:block;
-    }
-
-    .product-body{
-      padding:14px 14px 12px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .product-title{
-      margin:0;
-      font-size:18px;
-      font-weight:800;
-      color:var(--accent);
-      line-height:1.2;
-    }
-
-    .product-desc{
-      margin:0;
-      font-size:14px;
-      line-height:1.5;
-      color:#e7d6c8;
-      opacity:.95;
-    }
-
-    .product-meta{
-      margin-top:auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding-top:6px;
-    }
-
-    .product-price{
-      font-weight:800;
-      font-size:16px;
-      color:#fff;
-      white-space:nowrap;
-    }
-
-    .avail{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:13px;
-      font-weight:700;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(255,255,255,0.06);
-      white-space:nowrap;
-    }
-
-    .dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      box-shadow:0 0 0 3px rgba(255,255,255,0.06) inset;
-    }
-
-    .dot.green{ background:#2ecc71; }
-    .dot.red{ background:#e74c3c; }
-
-    .menu-note{
-      max-width:860px;
-      margin:0 auto 18px;
-      text-align:left;
-      font-size:16px;
-      line-height:1.7;
-      color:#e7d6c8;
-      opacity:.95;
-    }
-
-    .menu-status{
-      text-align:center;
-      opacity:0.9;
-      font-size:15px;
-    }
-
-    .menu-error{
-      text-align:center;
-      opacity:0.95;
-      font-size:15px;
-      color:#ffd1d1;
-    }
-
-    /* ===== Категории меню (аккордеон с анимацией) ===== */
-    .menu-category{
-      width:100%;
-      display:block;
-      margin: 18px 0 26px;
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 18px;
-      background: rgba(0,0,0,0.18);
-      overflow:hidden;
-    }
-
-    .category-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding: 16px 16px;
-      cursor:pointer;
-      user-select:none;
-      background: rgba(255,255,255,0.04);
-    }
-
-    .category-header:hover{
-      background: rgba(255,255,255,0.06);
-    }
-
-    .category-title{
-      margin:0;
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--accent);
-    }
-
-    .category-meta{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      opacity:.95;
-      white-space:nowrap;
-    }
-
-    .chevron{
-      display:inline-flex;
-      width: 32px;
-      height: 32px;
-      align-items:center;
-      justify-content:center;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
-      transform: rotate(0deg);
-      transition: transform .22s ease;
-      font-size: 14px;
-      line-height: 1;
-    }
-
-    .menu-category.collapsed .chevron{
-      transform: rotate(-90deg);
-    }
-
-    /* Контейнер, который анимируем (height) */
-    .category-panel{
-      height: auto;
-      overflow: hidden;
-      transition: height .26s ease, opacity .20s ease;
-      opacity: 1;
-      will-change: height;
-    }
-
-    .menu-category.collapsed .category-panel{
-      opacity: 0;
-    }
-
-    .category-products{
-      display:grid;
-      gap:16px;
-      padding:16px;
-
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-    @media (max-width: 1100px){
-      .category-products{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (max-width: 780px){
-      .category-products{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 480px){
-      .category-products{ grid-template-columns: repeat(1, minmax(0, 1fr)); }
-    }
-
-    .site-warning{
-      max-width: 860px;
-      margin: 24px auto 0;
-      padding: 14px 16px;
-      font-size: 20px;
-      line-height: 1.6;
-      text-align: left;
-
-      color: #e30707;
-      background: rgba(200, 60, 60, 0.12);
-      border: 1px solid rgba(200, 60, 60, 0.35);
-      border-radius: 14px;
-    }
-
-    .about-accent{
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent);
-      margin: 0 auto 18px;
-      max-width: 860px;
-      position: relative;
-      padding-left: 14px;
-    }
-
-    .about-accent::before{
-      content: none;
-      position: absolute;
-      left: 0;
-      top: 4px;
-      bottom: 4px;
-      width: 4px;
-      border-radius: 4px;
-      background: var(--accent);
-    }
-
-    .about-subtitle{
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--accent);
-      margin: 28px auto 12px;
-      max-width: 860px;
-    }
-
-    .text-danger {
-      color: #e30707;
-      font-weight: 600;
-      background: rgba(227, 7, 7, 0.08);
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
-  </style>
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<!-- Clockpicker (round clock) -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.5/jquery-clockpicker.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.5/jquery-clockpicker.min.js"></script>
-
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-  <header>
+
+  <!-- ===== HEADER ===== -->
+  <header id="site-header">
     <div class="header-inner">
-      <div class="brand"><h1>СыТО kitchen</h1></div>
-      <nav aria-label="Главное меню">
-        <button class="menu-toggle" aria-expanded="false" aria-label="Меню">≡</button>
+      <div class="brand"><h1>СыТО</h1></div>
+
+      <nav id="main-nav" aria-label="Главное меню">
+        <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-label="Открыть меню">≡</button>
         <ul>
           <li><a href="#home">Главная</a></li>
           <li><a href="#about">О нас</a></li>
           <li><a href="#menu">Меню</a></li>
-          <li><a href="#preorder">Предзаказ</a></li>
+          <li><a href="#delivery">Доставка</a></li>
           <li><a href="#contact">Контакты</a></li>
         </ul>
       </nav>
+
+      <!-- Кнопка корзины -->
+      <button class="cart-btn" id="cart-btn" aria-label="Открыть корзину">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+      </button>
     </div>
   </header>
 
-  <main id="home">
-    <section class="hero" aria-label="Главное фото">
+  <main>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="home" aria-label="Главное фото">
       <figure class="hero-figure">
-        <img src="photo_main1.jpg" alt="Главное фото">
-        <!-- <div class="text-panel">
-          <div class="text-box">
-            <h2>Куры гриль и свежая домашняя кухня</h2>
-            <p>Мы готовим каждый день из свежих продуктов: куры гриль, мясо, гарниры и салаты. Всё просто и вкусно — как дома</p>
-          </div> -->
-        </div>
+        <img src="photo_main1.jpg" alt="СыТО — домашняя кухня">
       </figure>
     </section>
 
-    <section>
-      <h3 class="site-warning">
-        Полное наполнение сайта находится в разработке.
-        Сейчас в меню доступны только блюда для предзаказа.
-        После Нового года на сайте будет представлен весь наш ассортимент.
-      </h3>
-    </section>
+    <!-- ===== О НАС ===== -->
+    <section id="about" class="section-narrow">
+      <h2 class="section-title">О нас</h2>
 
-    <section id="about" class="section">
-      <h3>О нас</h3>
-      <p class="about-subtitle">
-        Сытная домашняя кухня вне дома.
-      </p>
-      <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:18px auto 0;">
-        <strong>СыТО kitchen</strong> кухня на каждый день, где главное — вкус, качество и стабильность. 
-        Мы готовим из высококачественного сырья: куры гриль, мясные блюда, гарниры и салаты. 
+      <p class="about-lead">Сытная домашняя кухня вне дома.</p>
+
+      <p class="body-text">
+        <strong>СыТО</strong> — кухня на каждый день, где главное — вкус, качество и стабильность.
+        Мы готовим из высококачественного сырья: куры гриль, мясные блюда, гарниры и салаты.
         Простые и понятные блюда, которые поднимают настроение. Просто. Честно. Вовремя.
       </p>
-      <h4 class="about-subtitle">
-        О проекте
-      </h4>
-      <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:18px auto 0;">
-        <strong>СыТО kitchen</strong> - домашняя кухня домашний продукт с фокусом на качество. 
-          Мы закупаем ингредиенты небольшими партиями и готовим ежедневно. 
-          Еда всегда свежая. Живая.
+
+      <h3 class="about-subtitle">О проекте</h3>
+      <p class="body-text">
+        <strong>СыТО</strong> — домашняя кухня с фокусом на качество.
+        Мы закупаем ингредиенты небольшими партиями и готовим ежедневно. Еда всегда свежая. Живая.
       </p>
-      <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:18px auto 0;">
-        Наше меню понятное: 
-          курица гриль, сытные мясные блюда, простые гарниры и свежие салаты.
-          Без лишнего — только то, что действительно хочется есть каждый день.
-          И, конечно, хороший кофе.
+      <p class="body-text">
+        Наше меню понятное: курица гриль, сытные мясные блюда, простые гарниры и свежие салаты.
+        Без лишнего — только то, что действительно хочется есть каждый день. И, конечно, хороший кофе.
       </p>
-      <p style="text-align:left; font-size:18px; line-height:1.8; max-width:860px; margin:18px auto 0;">
-        <strong>СыТО kitchen</strong> - когда не нужно выбирать между «быстро» и «вкусно».
-          Еда для обеда, ужина и дома.
-          Для вас и вашей семьи. Без лишних добавок. Мы готовим то, что сами едим!
+      <p class="body-text">
+        <strong>СыТО</strong> — когда не нужно выбирать между «быстро» и «вкусно».
+        Еда для обеда, ужина и дома. Для вас и вашей семьи. Без лишних добавок. Мы готовим то, что сами едим!
       </p>
     </section>
 
-    <section id="menu" class="section section-menu">
-      <h3>Меню</h3>
-      <div class="site-warning">
-        В предновогодний период заказы принимаются от 500 г
-        («Сельдь под шубой» — от 1 кг).
-        Блюда формируются индивидуально, под каждый заказ.
+    <!-- ===== МЕНЮ ===== -->
+    <section id="menu">
+      <div class="menu-title-wrap">
+        <h2 class="section-title">Меню</h2>
       </div>
-      <div id="menu-status" class="menu-status">Загружаем меню…</div>
-      <div id="menu-grid" class="menu-grid" aria-live="polite"></div>
+
+      <!-- Липкая плашка с категориями -->
+      <div class="cat-strip" id="cat-strip" role="navigation" aria-label="Категории меню">
+        <!-- Заполняется через menu.js -->
+      </div>
+
+      <div class="menu-section-wrap">
+        <div id="menu-status" class="menu-status">Загружаем меню…</div>
+        <div id="menu-grid" aria-live="polite"></div>
+      </div>
     </section>
 
-    <section id="preorder" class="section">
-      <h3>Предзаказ (самовывоз)</h3>
-      <p class="preorder-intro">
-        Мы рады принять ваш заказ!
-        Пожалуйста, укажите ваше имя, номер телефона и желаемую дату и время получения.
-        Просто опишите ваш заказ в поле заказа.
-        Если вам удобнее, вы можете добавить голосовой комментарий.
-        <span class="text-danger">В предновогодний период заказы принимаются от 500 г
-        («Сельдь под шубой» — от 1 кг).</span>
-      </p>
-      <form id="preorder-form" class="preorder-form">
-        <div class="preorder-row">
-          <label for="preorder-name">ФИО</label>
-          <input id="preorder-name" name="name" type="text" required />
-        </div>
+    <!-- ===== ДОСТАВКА ===== -->
+    <section id="delivery" class="section-narrow">
+      <h2 class="section-title">Доставка</h2>
 
-        <div class="preorder-row">
-          <label for="preorder-phone">Телефон (Россия)</label>
-          <input
-            id="preorder-phone"
-            name="phone"
-            type="tel"
-            inputmode="tel"
-            required
-            placeholder="+7 (___) ___-__-__"
-          />
-        </div>
+      <div class="delivery-grid">
 
-        <div class="preorder-row">
-          <label for="preorder-date">Дата заказа</label>
-          <input
-            id="preorder-date"
-            name="date"
-            type="text"
-            required
-            placeholder="Выберите дату"
-          />
-        </div>
-
-        <div class="preorder-row">
-          <label for="preorder-time">Время получения</label>
-          <input
-            id="preorder-time"
-            name="time"
-            type="text"
-            required
-            placeholder="Выберите время"
-          />
-          <small class="time-hint">Выдаем заказы с 11:00 до 22:00.</small>
-        </div>
-
-        <div class="preorder-row" style="display:none">
-          <label>Выберите один из готовых наборов или укажите свой вариант в комментарии.</label>
-          <div class="set-options">
-            <label><input type="radio" name="set_choice" value="set1"> Сет 1</label>
-            <label><input type="radio" name="set_choice" value="set2"> Сет 2</label>
-            <label><input type="radio" name="set_choice" value="set3"> Сет 3</label>
-            <label><input type="radio" name="set_choice" value="set4"> Сет 4</label>
-            <label><input type="radio" name="set_choice" value="set5"> Сет 5</label>
-            <label><input type="radio" name="set_choice" value="custom" checked> Свой выбор</label>
+        <div class="delivery-card">
+          <div class="delivery-card-icon">🕐</div>
+          <h3 class="delivery-card-title">Время доставки</h3>
+          <p class="delivery-text">Доставляем в двухчасовых интервалах с 10:00 до 20:00 — или как можно быстрее, если вы очень голодны.</p>
+          <div class="delivery-table">
+            <div class="delivery-row">
+              <span class="delivery-label">Интервалы</span>
+              <span class="delivery-value">10–12, 12–14, 14–16, 16–18, 18–20</span>
+            </div>
           </div>
         </div>
 
-        <div class="preorder-row">
-          <label for="preorder-comment">Заказ</label>
-          <textarea
-            id="preorder-comment"
-            name="comment"
-            rows="3"
-            style="overflow:hidden; resize:none;"
-            placeholder="Опишите желаемые блюда, время получения или другие детали."
-          ></textarea>
-        </div>
-
-        <div class="preorder-row">
-          <label>Голосовой комментарий (по желанию)</label>
-          <div class="audio-controls">
-            <button type="button" class="btn btn-secondary" id="audio-record-btn">Записать</button>
-            <span class="audio-status" id="audio-status">Запись не добавлена</span>
+        <div class="delivery-card">
+          <div class="delivery-card-icon">💰</div>
+          <h3 class="delivery-card-title">Стоимость доставки</h3>
+          <div class="delivery-table">
+            <div class="delivery-row">
+              <span class="delivery-label">Заказ до 2 000 ₽</span>
+              <span class="delivery-value">200 ₽</span>
+            </div>
+            <div class="delivery-row">
+              <span class="delivery-label">Заказ от 2 000 ₽</span>
+              <span class="delivery-value delivery-value--free">Бесплатно</span>
+            </div>
           </div>
         </div>
 
-        <div class="preorder-actions">
-          <button type="submit" class="btn" id="preorder-submit-btn">Подтвердить предзаказ</button>
+        <div class="delivery-card">
+          <div class="delivery-card-icon">💳</div>
+          <h3 class="delivery-card-title">Оплата</h3>
+          <p class="delivery-text">Оплата при получении — наличными или картой через терминал курьера.</p>
         </div>
-      </form>
+
+      </div>
     </section>
 
-    <section id="contact" class="section" style="background:#1F2421;">
-      <h3>Контакты</h3>
-      <p style="text-align:center; font-size:18px;">📍 Санкт-Петербург, Кудрово, ул. Строителей, 16</p>
-      <p style="text-align:center; font-size:18px;">📞 +7 (950) 037-13-96</p>
-      <p style="text-align:center; font-size:18px;">🕒 Ежедневно 11:00 — 22:00</p>
-      <!-- <div>
-        <iframe src="https://yandex.ru/sprav/widget/155493913207" width="100%" height="340" frameborder="0"></iframe>
-      </div> -->
-  <div style="border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.12);">
-    <iframe
-      title="Yandex Map — СыТО kitchen"
-      src="https://yandex.com/map-widget/v1/?ll=30.522317%2C59.909144&z=22&pt=30.522317,59.909144,pm2rdm"
-      width="100%"
-      height="430"
-      frameborder="0"
-      allowfullscreen>
-    </iframe>
-  </div>
-      <!-- <div style="margin-top:20px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.12);">
-        <iframe title="Yandex Map — Санкт-Петербург, Кудрово, ул. Строителей, 16" src="https://yandex.com/map-widget/v1/?mode=search&z=15&text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%9A%D1%83%D0%B4%D1%80%D0%BE%D0%B2%D0%BE%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%A1%D1%82%D1%80%D0%BE%D0%B8%D1%82%D0%B5%D0%BB%D0%B5%D0%B9%2C%2016" width="100%" height="430" frameborder="0" allowfullscreen></iframe>
-      </div> -->
+    <!-- ===== КОНТАКТЫ ===== -->
+    <section id="contact" class="section-narrow section-contact">
+      <h2 class="section-title">Контакты</h2>
+      <p class="contact-item">📍 Санкт-Петербург, Кудрово, ул. Строителей, 16</p>
+      <p class="contact-item">📞 <a href="tel:+79500371396" style="color:inherit">+7 (950) 037-13-96</a></p>
+      <p class="contact-item">🕒 Ежедневно 11:00 — 22:00</p>
+      <div class="map-wrap">
+        <iframe
+          title="Yandex Map — СыТО"
+          src="https://yandex.com/map-widget/v1/?ll=30.522317%2C59.909144&z=22&pt=30.522317,59.909144,pm2rdm"
+          width="100%" height="430" frameborder="0" allowfullscreen>
+        </iframe>
+      </div>
     </section>
+
   </main>
 
-  <footer>© 2025 СыТО kitchen. Все права защищены.</footer>
-  
+  <footer>© 2025 СыТО. Все права защищены.</footer>
+
+  <!-- ===== КОРЗИНА ===== -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-panel" id="cart-panel" aria-label="Корзина">
+    <!-- Заполняется через cart.js -->
+  </aside>
+
+  <!-- Sticky-плашка корзины -->
+  <div class="cart-sticky-bar" id="cart-sticky-bar">
+    <div class="sticky-bar-left">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span>Перейти к заказу</span>
+    </div>
+    <div class="sticky-bar-right">
+      <span class="sticky-bar-delivery"></span>
+      <span class="sticky-bar-total"></span>
+    </div>
+  </div>
+
+  <!-- Toast-уведомление -->
+  <div class="cart-toast" id="cart-toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== СКРИПТЫ ===== -->
+  <script src="js/address-suggest.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/cart.js"></script>
   <script>
-  // Подгоняем высоту хэдера
-  const hdr = document.querySelector('header');
-  function syncHeaderHeight(){
-    const h = hdr ? hdr.offsetHeight : 0;
-    document.documentElement.style.setProperty('--header-h', h + 'px');
-  }
-  window.addEventListener('load', syncHeaderHeight);
-  window.addEventListener('resize', syncHeaderHeight);
+    /* --- Синхронизация высоты хедера --- */
+    const siteHeader = document.getElementById('site-header');
+    function syncHeaderHeight() {
+      document.documentElement.style.setProperty(
+        '--header-h',
+        (siteHeader ? siteHeader.offsetHeight : 72) + 'px'
+      );
+    }
+    window.addEventListener('load',   syncHeaderHeight);
+    window.addEventListener('resize', syncHeaderHeight);
 
-  // Мобильное меню
-  const nav = document.querySelector('header nav');
-  const btn = document.querySelector('.menu-toggle');
-  const links = nav.querySelectorAll('a');
+    /* --- Мобильное меню --- */
+    const mainNav    = document.getElementById('main-nav');
+    const menuToggle = document.getElementById('menu-toggle');
 
-  function closeMenu(){ nav.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    const opened = nav.classList.toggle('open');
-    btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
-  });
-  document.addEventListener('click', e => { if(!nav.contains(e.target)) closeMenu(); });
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
-  links.forEach(link => link.addEventListener('click', closeMenu));
+    function closeNav() {
+      mainNav.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
 
-  // ===== Маска телефона +7 (XXX) XXX-XX-XX =====
-  const phoneInput = document.getElementById('preorder-phone');
-  if (phoneInput) {
-    phoneInput.addEventListener('input', () => {
-      let digits = phoneInput.value.replace(/\D/g, '');
-      if (digits.startsWith('8')) digits = '7' + digits.slice(1);
-      if (!digits.startsWith('7')) digits = '7' + digits;
-      digits = digits.slice(0, 11);
-
-      let result = '+7';
-      if (digits.length > 1) {
-        result += ' (' + digits.slice(1, 4);
-        if (digits.length >= 4) result += ')';
-        if (digits.length > 4) result += ' ' + digits.slice(4, 7);
-        if (digits.length > 7) result += '-' + digits.slice(7, 9);
-        if (digits.length > 9) result += '-' + digits.slice(9, 11);
-      }
-      phoneInput.value = result;
+    menuToggle.addEventListener('click', e => {
+      e.stopPropagation();
+      const opened = mainNav.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', opened ? 'true' : 'false');
     });
-
-    phoneInput.addEventListener('focus', () => {
-      if (!phoneInput.value.trim()) {
-        phoneInput.value = '+7 ';
-      }
-    });
-  }
-
-  // ===== Авто-resize textarea =====
-  const commentArea = document.getElementById('preorder-comment');
-  function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
-  }
-  if (commentArea) {
-    autoResize(commentArea);
-    commentArea.addEventListener('input', () => autoResize(commentArea));
-  }
-
-  // ===== Placeholder для комментария в зависимости от выбора сета =====
-  const setRadios = document.querySelectorAll('input[name="set_choice"]');
-  if (commentArea && setRadios.length) {
-    const updateCommentPlaceholder = () => {
-      const selected = Array.from(setRadios).find(r => r.checked);
-      if (!selected) return;
-
-      if (selected.value === 'custom') {
-        commentArea.placeholder = 'Опишите желаемые блюда, время получения или другие детали.';
-      } else {
-        commentArea.placeholder = 'При необходимости допишите пожелания к выбранному набору.';
-      }
-      autoResize(commentArea);
-    };
-
-    setRadios.forEach(r => r.addEventListener('change', updateCommentPlaceholder));
-    updateCommentPlaceholder();
-  }
-
-  // ===== Современный date-picker (flatpickr) =====
-  const dateInput = document.getElementById('preorder-date');
-  if (dateInput && typeof flatpickr !== 'undefined') {
-    flatpickr(dateInput, {
-      dateFormat: 'd.m.Y',
-      minDate: 'today'
-    });
-  }
-
-  const timeInput = document.getElementById('preorder-time');
-  if (timeInput && window.jQuery && typeof jQuery(timeInput).clockpicker === 'function') {
-    jQuery(timeInput).clockpicker({
-      autoclose: true,
-      placement: 'bottom',
-      align: 'left',
-      donetext: 'Готово'
-    });
-
-    // обмеження 11:00 - 22:00
-    function parseHHMM(v){
-      const m = String(v || '').match(/^(\d{1,2}):(\d{2})$/);
-      if (!m) return null;
-      const h = Number(m[1]), min = Number(m[2]);
-      if (h < 0 || h > 23 || min < 0 || min > 59) return null;
-      return h * 60 + min;
-    }
-
-    function clampWorkHours(){
-      const t = parseHHMM(timeInput.value);
-      if (t === null) return;
-
-      const minT = 11 * 60;  // 11:00
-      const maxT = 22 * 60;  // 22:00
-
-      if (t < minT || t > maxT) {
-        alert('Пожалуйста, выберите время между 11:00 и 22:00');
-        timeInput.value = '';
-        timeInput.focus();
-      }
-    }
-
-    timeInput.addEventListener('change', clampWorkHours);
-    timeInput.addEventListener('blur', clampWorkHours);
-  }
-
-  // ===== Аудио-запись =====
-  const recordBtn = document.getElementById('audio-record-btn');
-  const statusEl = document.getElementById('audio-status');
-  let mediaRecorder = null;
-  let audioChunks = [];
-  let recordedBlob = null;
-  let isRecording = false;
-
-  async function startRecording() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder = new MediaRecorder(stream);
-      audioChunks = [];
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) audioChunks.push(e.data);
-      };
-      mediaRecorder.onstop = () => {
-        if (audioChunks.length > 0) {
-          recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          const seconds = Math.round(recordedBlob.size / 16000);
-          statusEl.textContent = 'Запись готова (примерно ' + seconds + ' сек.)';
-        } else {
-          statusEl.textContent = 'Запись не добавлена';
-          recordedBlob = null;
-        }
-      };
-      mediaRecorder.start();
-      isRecording = true;
-      recordBtn.textContent = 'Стоп';
-      statusEl.textContent = 'Идёт запись...';
-    } catch (err) {
-      console.error(err);
-      alert('Не удалось получить доступ к микрофону. Проверьте разрешения браузера.');
-    }
-  }
-
-  function stopRecording() {
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-      mediaRecorder.stream.getTracks().forEach(t => t.stop());
-      mediaRecorder = null;
-    }
-    isRecording = false;
-    recordBtn.textContent = 'Записать';
-  }
-
-  if (recordBtn) {
-    recordBtn.addEventListener('click', () => {
-      if (!isRecording) startRecording();
-      else stopRecording();
-    });
-  }
-
-  // ===== Отправка формы на Cloudflare Worker =====
-  const preorderForm = document.getElementById('preorder-form');
-  const submitBtn = document.getElementById('preorder-submit-btn');
-
-  const WORKER_URL = 'https://syto-preorder.syto-kitchen.workers.dev'
-
-  if (preorderForm) {
-    preorderForm.addEventListener('submit', async function (e) {
-      e.preventDefault();
-
-      const formData = new FormData(preorderForm);
-      if (recordedBlob) {
-        formData.append('voice', recordedBlob, 'comment.webm');
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Отправляем...';
-
-      try {
-        const response = await fetch(WORKER_URL, {
-          method: 'POST',
-          body: formData
-        });
-
-        if (response.ok) {
-          alert('Спасибо! Предзаказ отправлен.');
-          preorderForm.reset();
-          recordedBlob = null;
-          if (statusEl) statusEl.textContent = 'Запись не добавлена';
-          if (commentArea) autoResize(commentArea);
-        } else {
-          console.error('Ответ воркера:', await response.text());
-          alert('Ошибка при отправке заказа. Попробуйте ещё раз.');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Не удалось связаться с сервером. Проверьте подключение к интернету.');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Подтвердить предзаказ';
-      }
-    });
-  }
-
-  // ===== Публичное меню (категории + аккордеон) =====
-  const MENU_API_URL = 'https://menu.syto-kitchen.workers.dev/api/menu';
-  const CATEGORIES_API_URL = 'https://menu.syto-kitchen.workers.dev/api/categories';
-
-  const menuGrid = document.getElementById('menu-grid');
-  const menuStatus = document.getElementById('menu-status');
-
-  const FALLBACK_IMG = 'syto_cat.jpg';
-
-  const STATIC_CATEGORIES = [
-    { id: 1, name: "Салаты", display_order: 1 }, { id: 2, name: "Горячие блюда", display_order: 2 }, { id: 3, name: "Блины", display_order: 3 }, { id: 4, name: "Паста и крупы", display_order: 4 }, { id: 5, name: "Гарниры", display_order: 5 }, { id: 7, name: "Зразы и изделия из теста", display_order: 6 }, { id: 8, name: "Десерты и напитки", display_order: 7 }, { id: 6, name: "Салаты и холодные закуски", display_order: 10000 }
-  ];
-
-  const STATIC_PRODUCTS = [ { id: 22, name: "\"Шуба\" (Сельдь под шубой)", description: "Сельдь соленая (филе), отварной картофель, отварная морковь, отварная свекла, яйца отварные, майонез", price: 115, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765820629499_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 1 }, { id: 19, name: "Оливье", description: "Картофель, колбаса докторская, яйца, морковь, колбаса салями, огурцы маринованные, горошек консервированный, майонез, соль", price: 125, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821383366_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 2 }, { id: 10, name: "Винегрет", description: "Свекла, картофель, морковь, огурцы маринованные, горошек, красный лук, масло растительное, соль", price: 75, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765819895851_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 3 }, { id: 15, name: "Крабовый салат", description: "Крабовое мясо, рис, яйца, кукуруза консервированная, огурец свежий, майонез, соль", price: 140, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765820793720_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 4 }, { id: 20, name: "Свекла с фетой", description: "Свёкла, фета, чеснок, масло растительное, соль", price: 80, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 5 }, { id: 23, name: "Витаминный салат", description: "Белокочанная капуста, морковь, красная капуста, растительное масло (оливковое, подсолнечное), лимонный сок (или уксус), соль, сахар — по вкусу", price: 65, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 6 }, { id: 48, name: "Охотничий салат", description: "Охотничьи колбаски, корейская морковка, картофель, яйца, полутвердый сыр, маринованный огурец, майонез, соль, перец", price: 125, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 8 }, { id: 49, name: "Квашеная капуста", description: "Капуста, морковь, сахар, соль", price: 60, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 9 }, { id: 50, name: "Морковь по-корейски", description: "Морковь, чеснок, растительное масло, уксус, сахар, соль, кориандр, острый перец", price: 70, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 10 }, { id: 51, name: "Салат \"СыТО\"", description: "Филе куриного бедра, шампиньоны, твёрдый сыр, помидоры, лук, чеснок, майонез, соль, перец", price: 210, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "100 г", category_id: 1, display_order: 11 }, { id: 31, name: "Кура гриль целая", description: "Курица охлаждённая, маринад (чеснок, специи)", price: 800, is_set: 0, photo_url: "https://pub-ac755ba309d0441c96799fbe5cfb36e0.r2.dev/products/1765821483938_syto_cat.jpg", show_on_site: 1, is_available: 1, price_unit: "шт", category_id: 2, display_order: 1 } ];
-
-  // Принудительно: всем блюдам одна картинка из корня проекта
-  function normalizeStaticData(categories, products){
-    const cats = (Array.isArray(categories) ? categories : []).map(c => ({
-      id: c.id,
-      name: c.name,
-      display_order: c.display_order ?? 0,
-    }));
-
-    const prods = (Array.isArray(products) ? products : []).map(p => ({
-      ...p,
-      photo_url: FALLBACK_IMG, // <- всем дефолт
-    }));
-
-    return { cats, prods };
-  }
-
-  function escapeHtml(s){
-    return String(s ?? '')
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'",'&#039;');
-  }
-
-  function formatPrice(price, unit){
-    if (price === null || price === undefined || price === '') return '';
-    const p = String(price).trim();
-    const u = String(unit ?? '').trim();
-    return u ? `${p} ₽ / ${u}` : `${p} ₽`;
-  }
-
-  function productCardHtml(p){
-    const name = escapeHtml(p.name);
-    const desc = escapeHtml(p.description || '');
-    const price = formatPrice(p.price, p.price_unit);
-    // const img = escapeHtml(p.photo_url || FALLBACK_IMG);
-    const img = FALLBACK_IMG;
-
-    const available = !!p.is_available;
-    const dotClass = available ? 'green' : 'red';
-    const label = available ? 'В наличии' : 'Нет в наличии';
-
-    return `
-      <article class="product-card">
-        <img class="product-img" src="${img}" alt="${name}"
-             loading="lazy"
-             onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
-        <div class="product-body">
-          <h4 class="product-title">${name}</h4>
-          ${desc ? `<p class="product-desc">${desc}</p>` : `<p class="product-desc" style="opacity:.6">Описание скоро добавим.</p>`}
-          <div class="product-meta">
-            <span class="product-price">${price ? escapeHtml(price) : ''}</span>
-            <span class="avail"><span class="dot ${dotClass}"></span>${label}</span>
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
-  function getCollapsedStateKey(categoryId){
-    return `menu_cat_collapsed_${categoryId}`;
-  }
-
-  function isCollapsed(categoryId){
-    return localStorage.getItem(getCollapsedStateKey(categoryId)) === '1';
-  }
-
-  function setCollapsed(categoryId, value){
-    localStorage.setItem(getCollapsedStateKey(categoryId), value ? '1' : '0');
-  }
-
-  // ---- Accordion animation helpers (height transition) ----
-  function openPanel(section){
-    const panel = section.querySelector('.category-panel');
-    if (!panel) return;
-
-    // start from current height (0) -> target height (scrollHeight)
-    panel.style.height = panel.scrollHeight + 'px';
-
-    // after transition end set to auto to allow dynamic content
-    const onEnd = (e) => {
-      if (e.propertyName !== 'height') return;
-      panel.style.height = 'auto';
-      panel.removeEventListener('transitionend', onEnd);
-    };
-    panel.addEventListener('transitionend', onEnd);
-  }
-
-  function closePanel(section){
-    const panel = section.querySelector('.category-panel');
-    if (!panel) return;
-
-    // if auto -> set explicit px first, then animate to 0
-    panel.style.height = panel.scrollHeight + 'px';
-    // force reflow
-    panel.offsetHeight;
-    panel.style.height = '0px';
-  }
-
-  function applyInitialPanelState(section, collapsed){
-    const panel = section.querySelector('.category-panel');
-    const header = section.querySelector('.category-header');
-    if (!panel || !header) return;
-
-    if (collapsed) {
-      section.classList.add('collapsed');
-      header.setAttribute('aria-expanded', 'false');
-      panel.style.height = '0px';
-    } else {
-      section.classList.remove('collapsed');
-      header.setAttribute('aria-expanded', 'true');
-      panel.style.height = 'auto';
-    }
-  }
-
-  function toggleCategory(section){
-    const header = section.querySelector('.category-header');
-    const id = section.getAttribute('data-category-id');
-
-    const willCollapse = !section.classList.contains('collapsed');
-
-    if (willCollapse) {
-      // collapsing
-      section.classList.add('collapsed');
-      header.setAttribute('aria-expanded', 'false');
-      setCollapsed(id, true);
-      closePanel(section);
-    } else {
-      // expanding
-      section.classList.remove('collapsed');
-      header.setAttribute('aria-expanded', 'true');
-      setCollapsed(id, false);
-
-      const panel = section.querySelector('.category-panel');
-      if (panel) {
-        // set from 0 -> scrollHeight
-        panel.style.height = '0px';
-        panel.offsetHeight;
-      }
-      openPanel(section);
-    }
-  }
-
-  function renderGroupedMenu(categories, products){
-    if (!menuGrid) return;
-
-    const cats = Array.isArray(categories) ? categories.slice() : [];
-    const prods = Array.isArray(products) ? products.slice() : [];
-
-    cats.sort((a,b) => (Number(a.display_order ?? 0) - Number(b.display_order ?? 0)) || (Number(a.id) - Number(b.id)));
-    prods.sort((a,b) => (Number(a.display_order ?? 0) - Number(b.display_order ?? 0)) || (Number(a.id) - Number(b.id)));
-
-    const byCat = new Map();
-    for (const p of prods) {
-      const cid = p.category_id ?? null;
-      if (!byCat.has(cid)) byCat.set(cid, []);
-      byCat.get(cid).push(p);
-    }
-
-    const uncategorized = byCat.get(null) || byCat.get(undefined);
-    const hasUncat = Array.isArray(uncategorized) && uncategorized.length > 0;
-
-    const finalCats = cats.slice();
-    if (hasUncat) {
-      finalCats.push({ id: 'uncat', name: 'Без категории', display_order: 999999999 });
-    }
-
-    const html = finalCats.map(c => {
-      const cid = c.id;
-      const title = escapeHtml(c.name || 'Категория');
-      const list = (cid === 'uncat') ? uncategorized : (byCat.get(cid) || []);
-
-      if (!list || list.length === 0) return '';
-
-      const collapsed = isCollapsed(cid);
-
-      return `
-        <section class="menu-category ${collapsed ? 'collapsed' : ''}" data-category-id="${escapeHtml(cid)}">
-          <div class="category-header" role="button" tabindex="0" aria-expanded="${collapsed ? 'false' : 'true'}">
-            <h4 class="category-title">${title}</h4>
-            <div class="category-meta">
-              <span class="chevron">▾</span>
-            </div>
-          </div>
-
-          <div class="category-panel">
-            <div class="category-products">
-              ${list.map(productCardHtml).join('')}
-            </div>
-          </div>
-        </section>
-      `;
-    }).join('');
-
-    menuGrid.innerHTML = html || '';
-
-    // Attach handlers + apply initial states correctly
-    menuGrid.querySelectorAll('.menu-category').forEach(section => {
-      const header = section.querySelector('.category-header');
-      const cid = section.getAttribute('data-category-id');
-      const collapsed = isCollapsed(cid);
-
-      applyInitialPanelState(section, collapsed);
-
-      const onToggle = () => toggleCategory(section);
-
-      header.addEventListener('click', onToggle);
-      header.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onToggle();
-        }
-      });
-    });
-  }
-
-  function loadMenu(){
-    if (!menuGrid || !menuStatus) return;
-
-    const { cats, prods } = normalizeStaticData(STATIC_CATEGORIES, STATIC_PRODUCTS);
-
-    if (!Array.isArray(prods) || prods.length === 0){
-      menuStatus.innerHTML = '<div class="menu-status">Меню пока пустое.</div>';
-      menuGrid.innerHTML = '';
-      return;
-    }
-
-    menuStatus.textContent = '';
-    renderGroupedMenu(cats, prods);
-
-    // Recalculate open panels on resize (grid height can change)
-    window.addEventListener('resize', () => {
-      document.querySelectorAll('.menu-category:not(.collapsed) .category-panel').forEach(panel => {
-        panel.style.height = 'auto';
-      });
-    });
-  }
-
-  window.addEventListener('load', loadMenu);
+    document.addEventListener('click',   e => { if (!mainNav.contains(e.target)) closeNav(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeNav(); Cart.close(); } });
+    mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+
+    /* --- Открытие/закрытие корзины --- */
+    document.getElementById('cart-btn').addEventListener('click', () => Cart.open());
+    document.getElementById('cart-overlay').addEventListener('click', () => Cart.close());
   </script>
 
 </body>

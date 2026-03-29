@@ -1,366 +1,824 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Syto Admin</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background: #f5f5f5;
     }
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
+
+    /* ── Sidebar ── */
+    #sidebar {
+      width: 200px;
+      min-width: 200px;
+      background: #2c3e50;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #sidebar h2 {
       padding: 20px;
-      background-color: #fff;
+      font-size: 18px;
+      border-bottom: 1px solid #3d5166;
+      letter-spacing: 0.5px;
+    }
+
+    #sidebar nav {
+      flex: 1;
+      padding-top: 8px;
+    }
+
+    #sidebar nav a {
+      display: block;
+      padding: 14px 20px;
+      color: #cdd3d8;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-size: 15px;
+    }
+
+    #sidebar nav a:hover {
+      background: #3d5166;
+      color: #fff;
+    }
+
+    #sidebar nav a.active {
+      background: #3d5166;
+      color: #fff;
+      font-weight: 600;
+      border-left: 3px solid #4CAF50;
+    }
+
+    /* ── Main content ── */
+    #main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      background: #f5f5f5;
+    }
+
+    /* ── Section visibility ── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── Card / Panel ── */
+    .card {
+      background: #fff;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      margin-bottom: 24px;
     }
-    h1 {
-      text-align: center;
+
+    .card h3 {
+      margin-bottom: 16px;
+      font-size: 16px;
+      color: #2c3e50;
     }
+
+    /* ── Form grid ── */
+    .product-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 7px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #333;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #4CAF50;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 72px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      background: #4CAF50;
+      color: #fff;
+      transition: opacity 0.15s;
+    }
+
+    .btn:hover { opacity: 0.88; }
+
+    .btn-danger {
+      background: #f44336;
+      color: #fff;
+      padding: 5px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: opacity 0.15s;
+    }
+
+    .btn-danger:hover { opacity: 0.85; }
+
+    .btn-secondary {
+      background: #607d8b;
+      color: #fff;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: opacity 0.15s;
+    }
+
+    .btn-secondary:hover { opacity: 0.85; }
+
+    .btn-edit {
+      background: #2196F3;
+      color: #fff;
+      padding: 5px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: opacity 0.15s;
+    }
+
+    .btn-edit:hover { opacity: 0.85; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: flex-end;
+    }
+
+    .filter-bar .form-group {
+      min-width: 140px;
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      font-size: 14px;
     }
-    table th, table td {
-      padding: 12px;
+
+    table thead tr {
+      background: #2c3e50;
+      color: #fff;
+    }
+
+    table thead th {
+      padding: 10px 12px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    .btn {
-      padding: 8px 16px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    .btn-danger {
-      background-color: #f44336;
-    }
-    .form-container{
-      margin-bottom: 20px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    .form-row-top{
-      display: grid;
-      grid-template-columns: 1fr 5fr;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .form-row-bottom{
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(120px, max-content);
-      gap: 10px;
-      align-items: center;
-      width: 100%;
-    }
-
-    .form-row-bottom > *{
-      min-width: 0;
-    }
-
-    .form-row-bottom input,
-    .form-row-bottom select{
-      width: 100%;
-    }
-
-    .form-row-bottom .btn{
+      font-weight: 500;
       white-space: nowrap;
     }
 
-    @media (max-width: 1100px){
-      .form-row-bottom{
-        grid-template-columns: repeat(3, minmax(160px, 1fr));
-      }
+    table tbody tr:nth-child(even) {
+      background: #f9f9f9;
     }
 
-    @media (max-width: 600px){
-      .form-row-top{
-        grid-template-columns: 1fr;
-      }
-      .form-row-bottom{
-        grid-template-columns: 1fr;
-      }
+    table tbody tr:hover {
+      background: #eef5fb;
     }
-    img {
-      width: 100px;
-      height: auto;
-      border-radius: 8px;
+
+    table tbody td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+
+    .td-actions {
+      display: flex;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    /* ── Page heading ── */
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    /* ── Checkbox cell ── */
+    .check-yes { color: #4CAF50; font-weight: 700; }
+    .check-no  { color: #f44336; }
+
+    /* ── Category form (simple 2-col) ── */
+    .cat-form-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .cat-form-row .form-group {
+      min-width: 160px;
+    }
+
+    /* ── Access denied ── */
+    #access-denied {
+      padding: 40px;
+      text-align: center;
+      color: #f44336;
+      font-size: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Admin Panel - Menu Management</h1>
 
-    <!-- Form to add a new product -->
-    <div class="form-container">
+<!-- Sidebar -->
+<div id="sidebar">
+  <h2>Syto Admin</h2>
+  <nav>
+    <a id="nav-products"   onclick="showSection('products')">Товары</a>
+    <a id="nav-categories" onclick="showSection('categories')">Категории</a>
+    <a id="nav-orders"     onclick="showSection('orders')">Заказы</a>
+  </nav>
+</div>
 
-      <div class="form-row-top">
-        <input type="text" id="name" placeholder="Product Name" />
-        <input type="text" id="description" placeholder="Description" />
-      </div>
+<!-- Main -->
+<div id="main">
 
-      <div class="form-row-bottom">
-        <input type="number" id="price" placeholder="Price" />
+  <!-- ══════════════ PRODUCTS SECTION ══════════════ -->
+  <div id="section-products" class="section">
+    <div class="page-title">Товары</div>
 
-        <select id="price_unit">
-          <option value="100 г" selected>Цена за: 100 г</option>
-          <option value="г">Цена за: г</option>
-          <option value="кг">Цена за: кг</option>
-          <option value="мл">Цена за: мл</option>
-          <option value="л">Цена за: л</option>
-          <option value="шт">Цена за: шт</option>
-          <option value="порц.">Цена за: порц.</option>
-        </select>
+    <!-- Add / Edit form -->
+    <div class="card">
+      <h3 id="product-form-title">Добавить товар</h3>
+      <form id="product-form" onsubmit="submitProductForm(event)">
+        <div class="product-form-grid">
 
-        <input type="file" id="photo" />
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Название *</label>
+            <input type="text" id="p-name" required placeholder="Название товара" />
+          </div>
 
-        <select id="is_set">
-          <option value="true">Is Set: Yes</option>
-          <option value="false">Is Set: No</option>
-        </select>
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Описание</label>
+            <textarea id="p-description" placeholder="Описание товара"></textarea>
+          </div>
 
-        <select id="show_on_site">
-          <option value="true">Show on Site: Yes</option>
-          <option value="false">Show on Site: No</option>
-        </select>
+          <div class="form-group">
+            <label>Цена *</label>
+            <input type="number" id="p-price" step="0.01" min="0" required placeholder="0.00" />
+          </div>
 
-        <select id="is_available">
-          <option value="true">Available: Yes</option>
-          <option value="false">Available: No</option>
-        </select>
+          <div class="form-group">
+            <label>Единица цены</label>
+            <input type="text" id="p-price-unit" placeholder="грн, порция..." />
+          </div>
 
-        <button class="btn" id="addProductBtn">Add Product</button>
-        <button class="btn btn-danger" id="resetBtn">Reset</button>
-      </div>
+          <div class="form-group">
+            <label>Категория</label>
+            <select id="p-category-id">
+              <option value="">— Без категории —</option>
+            </select>
+          </div>
 
+          <div class="form-group">
+            <label>Порядок отображения</label>
+            <input type="number" id="p-display-order" placeholder="0" />
+          </div>
+
+          <div class="form-group">
+            <label>Фото (filename)</label>
+            <input type="text" id="p-photo-filename" placeholder="photo.jpg" />
+          </div>
+
+          <div class="form-group">
+            <label>Это сет?</label>
+            <select id="p-is-set">
+              <option value="false">Нет</option>
+              <option value="true">Да</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Показывать на сайте</label>
+            <select id="p-show-on-site">
+              <option value="true">Да</option>
+              <option value="false">Нет</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Доступен</label>
+            <select id="p-is-available">
+              <option value="true">Да</option>
+              <option value="false">Нет</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn" id="product-submit-btn">Добавить товар</button>
+          <button type="button" class="btn-secondary" onclick="resetProductForm()">Сбросить</button>
+        </div>
+      </form>
     </div>
 
-    <div id="editPreview" style="margin-top: 10px;"></div>
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="form-group">
+        <label>Поиск по названию</label>
+        <input type="text" id="filter-search" placeholder="Поиск..." oninput="applyFilters()" />
+      </div>
+      <div class="form-group">
+        <label>Категория</label>
+        <select id="filter-cat" onchange="applyFilters()">
+          <option value="">Все</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Показывать на сайте</label>
+        <select id="filter-show" onchange="applyFilters()">
+          <option value="">Все</option>
+          <option value="true">Да</option>
+          <option value="false">Нет</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Доступен</label>
+        <select id="filter-avail" onchange="applyFilters()">
+          <option value="">Все</option>
+          <option value="true">Да</option>
+          <option value="false">Нет</option>
+        </select>
+      </div>
+    </div>
 
-    <h2>Product List</h2>
-    <table id="productsTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Price</th>
-          <th>Price Unit</th>
-          <th>Is Set</th>
-          <th>Show on Site</th>
-          <th>Is Available</th>
-          <th>Photo</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Product rows will be inserted here -->
-      </tbody>
-    </table>
+    <!-- Products table -->
+    <div class="card">
+      <div class="table-wrap">
+        <table id="products-table">
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Описание</th>
+              <th>Категория</th>
+              <th>Порядок</th>
+              <th>Цена</th>
+              <th>Ед.</th>
+              <th>Сет</th>
+              <th>Показ.</th>
+              <th>Доступ.</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody">
+            <tr><td colspan="10" style="text-align:center;color:#999;">Загрузка...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
-  <script>
-    const apiUrl = "https://menu.syto-kitchen.workers.dev";
+  <!-- ══════════════ CATEGORIES SECTION ══════════════ -->
+  <div id="section-categories" class="section">
+    <div class="page-title">Категории</div>
 
-    // Read token from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
+    <div class="card">
+      <h3 id="category-form-title">Добавить категорию</h3>
+      <form id="category-form" onsubmit="submitCategoryForm(event)">
+        <div class="cat-form-row">
+          <div class="form-group">
+            <label>Название *</label>
+            <input type="text" id="c-name" required placeholder="Название категории" />
+          </div>
+          <div class="form-group">
+            <label>Порядок отображения</label>
+            <input type="number" id="c-display-order" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="category-submit-btn">Сохранить</button>
+          <button type="button" class="btn-secondary" onclick="resetCategoryForm()">Сбросить</button>
+        </div>
+      </form>
+    </div>
 
-    // If missing → block access
-    if (!token) {
-        document.body.innerHTML = "<h2 style='text-align:center;color:red;'>Access denied: missing token</h2>";
-        throw new Error("Access denied: no token");
+    <div class="card">
+      <div class="table-wrap">
+        <table id="categories-table">
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Порядок</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody id="categories-tbody">
+            <tr><td colspan="3" style="text-align:center;color:#999;">Загрузка...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ ORDERS SECTION ══════════════ -->
+  <div id="section-orders" class="section">
+    <div class="page-title">Заказы</div>
+    <div class="card">
+      <p>Раздел в разработке.</p>
+    </div>
+  </div>
+
+</div><!-- /#main -->
+
+<script>
+  /* ─────────────────────────────────────────
+     Config & state
+  ───────────────────────────────────────── */
+  const apiUrl = 'https://menu.syto-kitchen.workers.dev';
+
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('token');
+
+  if (!token) {
+    document.getElementById('sidebar').style.display = 'none';
+    document.getElementById('main').innerHTML =
+      '<div id="access-denied">Доступ запрещён. Укажите ?token= в URL.</div>';
+    throw new Error('No token provided');
+  }
+
+  let categoriesMap  = {};   // id -> name
+  let allProducts    = [];
+  let allCategories  = [];
+
+  let editingProductId  = null;
+  let editingCategoryId = null;
+
+  /* ─────────────────────────────────────────
+     Section navigation
+  ───────────────────────────────────────── */
+  function showSection(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.remove('active'));
+
+    document.getElementById('section-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+  }
+
+  /* ─────────────────────────────────────────
+     Helpers
+  ───────────────────────────────────────── */
+  function boolVal(val) {
+    return val === true || val === 1 || val === '1' || val === 'true';
+  }
+
+  function checkMark(val) {
+    return boolVal(val)
+      ? '<span class="check-yes">&#10003;</span>'
+      : '<span class="check-no">&#10007;</span>';
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ─────────────────────────────────────────
+     Categories API
+  ───────────────────────────────────────── */
+  async function fetchCategories() {
+    try {
+      const res  = await fetch(`${apiUrl}/api/categories`);
+      const data = await res.json();
+      allCategories = Array.isArray(data) ? data : (data.categories || []);
+      categoriesMap = {};
+      allCategories.forEach(c => { categoriesMap[c.id] = c.name; });
+    } catch (e) {
+      console.error('fetchCategories error', e);
+      allCategories = [];
     }
+  }
 
-    // Function to fetch and display products
-    async function fetchProducts() {
-      const response = await fetch(`${apiUrl}/api/products?token=${token}`);
-      const products = await response.json();
-      
-      const productsTable = document.querySelector("#productsTable tbody");
-      productsTable.innerHTML = ""; // Clear the table before adding new rows
+  function populateCategoryFilters() {
+    // Product form select
+    const pSel = document.getElementById('p-category-id');
+    pSel.innerHTML = '<option value="">— Без категории —</option>';
+    allCategories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name;
+      pSel.appendChild(opt);
+    });
 
-      products.forEach(product => {
-        const row = document.createElement("tr");
-        
-        row.innerHTML = `
-          <td>${product.name}</td>
-          <td>${product.description}</td>
-          <td>${product.price}</td>
-          <td>${product.price_unit}</td>
-          <td>${product.is_set ? "Yes" : "No"}</td>
-          <td>${product.show_on_site ? "Yes" : "No"}</td>
-          <td>${product.is_available ? "Yes" : "No"}</td>
-          <td><img src="${product.photo_url}" alt="Product Image" /></td>
-          <td>
-            <button class="btn" onclick="editProduct(${product.id})">Edit</button>
-            <button class="btn btn-danger" onclick="deleteProduct(${product.id})">Delete</button>
-          </td>
-        `;
-        
-        productsTable.appendChild(row);
-      });
+    // Filter bar select
+    const fSel = document.getElementById('filter-cat');
+    fSel.innerHTML = '<option value="">Все</option>';
+    allCategories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name;
+      fSel.appendChild(opt);
+    });
+  }
+
+  function fetchCategoriesTable() {
+    const tbody = document.getElementById('categories-tbody');
+    if (!allCategories.length) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#999;">Нет категорий</td></tr>';
+      return;
     }
+    tbody.innerHTML = allCategories.map(c => `
+      <tr>
+        <td>${escHtml(c.name)}</td>
+        <td>${c.display_order != null ? c.display_order : ''}</td>
+        <td class="td-actions">
+          <button class="btn-edit" onclick="editCategory(${c.id})">Изменить</button>
+          <button class="btn-danger" onclick="deleteCategory(${c.id})">Удалить</button>
+        </td>
+      </tr>
+    `).join('');
+  }
 
-    // Function to add a new product
-    async function addProduct() {
-      const name = document.getElementById("name").value;
-      const description = document.getElementById("description").value;
-      const price = document.getElementById("price").value;
-      const priceUnit = document.getElementById("price_unit").value;
-      const photo = document.getElementById("photo").files[0];
-      const isSet = document.getElementById("is_set").value === "true";
-      const showOnSite = document.getElementById("show_on_site").value === "true";
-      const isAvailable = document.getElementById("is_available").value === "true";
+  async function submitCategoryForm(e) {
+    e.preventDefault();
+    const fd = new FormData();
+    fd.append('name', document.getElementById('c-name').value.trim());
+    const order = document.getElementById('c-display-order').value;
+    if (order !== '') fd.append('display_order', order);
 
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("price_unit", priceUnit);
-      formData.append("is_set", isSet);
-      formData.append("show_on_site", showOnSite);
-      formData.append("is_available", isAvailable);
-      formData.append("photo", photo); // Add the image file
-
-      const response = await fetch(`${apiUrl}/api/product?token=${token}`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        alert("Product added successfully!");
-        resetForm();
-        fetchProducts(); // Refresh product list
+    try {
+      let res;
+      if (editingCategoryId !== null) {
+        res = await fetch(`${apiUrl}/api/category/${editingCategoryId}?token=${token}`, { method: 'PUT', body: fd });
       } else {
-        alert("Failed to add product.");
+        res = await fetch(`${apiUrl}/api/category?token=${token}`, { method: 'POST', body: fd });
       }
+      if (!res.ok) throw new Error(await res.text());
+      resetCategoryForm();
+      await fetchCategories();
+      populateCategoryFilters();
+      fetchCategoriesTable();
+    } catch (err) {
+      alert('Ошибка: ' + err.message);
     }
+  }
 
-    // Function to delete a product
-    async function deleteProduct(id) {
-      const response = await fetch(`${apiUrl}/api/product/${id}?token=${token}`, {
-        method: "DELETE",
-      });
+  function editCategory(id) {
+    const cat = allCategories.find(c => c.id === id);
+    if (!cat) return;
+    editingCategoryId = id;
+    document.getElementById('c-name').value          = cat.name || '';
+    document.getElementById('c-display-order').value = cat.display_order != null ? cat.display_order : '';
+    document.getElementById('category-form-title').textContent  = 'Изменить категорию';
+    document.getElementById('category-submit-btn').textContent  = 'Обновить категорию';
+    document.getElementById('c-name').focus();
+  }
 
-      if (response.ok) {
-        alert("Product deleted successfully!");
-        fetchProducts(); // Refresh product list
+  async function deleteCategory(id) {
+    if (!confirm('Удалить категорию?')) return;
+    try {
+      const res = await fetch(`${apiUrl}/api/category/${id}?token=${token}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(await res.text());
+      await fetchCategories();
+      populateCategoryFilters();
+      fetchCategoriesTable();
+    } catch (err) {
+      alert('Ошибка: ' + err.message);
+    }
+  }
+
+  function resetCategoryForm() {
+    editingCategoryId = null;
+    document.getElementById('category-form').reset();
+    document.getElementById('category-form-title').textContent = 'Добавить категорию';
+    document.getElementById('category-submit-btn').textContent = 'Сохранить';
+  }
+
+  /* ─────────────────────────────────────────
+     Products API
+  ───────────────────────────────────────── */
+  async function fetchProducts() {
+    const tbody = document.getElementById('products-tbody');
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#999;">Загрузка...</td></tr>';
+    try {
+      const res  = await fetch(`${apiUrl}/api/products?token=${token}`);
+      const data = await res.json();
+      allProducts = Array.isArray(data) ? data : (data.products || []);
+      applyFilters();
+    } catch (e) {
+      console.error('fetchProducts error', e);
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#f44336;">Ошибка загрузки товаров</td></tr>';
+    }
+  }
+
+  function renderProductsTable(list) {
+    const tbody = document.getElementById('products-tbody');
+    if (!list.length) {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#999;">Нет товаров</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(p => `
+      <tr>
+        <td>${escHtml(p.name || '')}</td>
+        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+            title="${escHtml(p.description || '')}">${escHtml(p.description || '')}</td>
+        <td>${escHtml(categoriesMap[p.category_id] || (p.category_id ? '#' + p.category_id : '—'))}</td>
+        <td>${p.display_order != null ? p.display_order : ''}</td>
+        <td>${p.price != null ? p.price : ''}</td>
+        <td>${escHtml(p.price_unit || '')}</td>
+        <td>${checkMark(p.is_set)}</td>
+        <td>${checkMark(p.show_on_site)}</td>
+        <td>${checkMark(p.is_available)}</td>
+        <td class="td-actions">
+          <button class="btn-edit"   onclick="editProduct(${p.id})">Изменить</button>
+          <button class="btn-danger" onclick="deleteProduct(${p.id})">Удалить</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* Filter elements (resolved after DOM is ready) */
+  const filterSearch = document.getElementById('filter-search');
+  const filterCat    = document.getElementById('filter-cat');
+  const filterShow   = document.getElementById('filter-show');
+  const filterAvail  = document.getElementById('filter-avail');
+
+  function applyFilters() {
+    const search = filterSearch.value.toLowerCase();
+    const cat    = filterCat.value;
+    const show   = filterShow.value;   // '' | 'true' | 'false'
+    const avail  = filterAvail.value;
+
+    const filtered = allProducts.filter(p => {
+      if (search && !((p.name || '').toLowerCase().includes(search))) return false;
+      if (cat    && String(p.category_id) !== cat)                    return false;
+      if (show  !== '' && String(!!p.show_on_site)  !== show)         return false;
+      if (avail !== '' && String(!!p.is_available)  !== avail)        return false;
+      return true;
+    });
+    renderProductsTable(filtered);
+  }
+
+  /* Build FormData for product */
+  function buildProductFormData() {
+    const fd = new FormData();
+    fd.append('name',         document.getElementById('p-name').value.trim());
+    fd.append('description',  document.getElementById('p-description').value.trim());
+    fd.append('price',        document.getElementById('p-price').value);
+    fd.append('price_unit',   document.getElementById('p-price-unit').value.trim());
+    fd.append('is_set',       document.getElementById('p-is-set').value);
+    fd.append('show_on_site', document.getElementById('p-show-on-site').value);
+    fd.append('is_available', document.getElementById('p-is-available').value);
+
+    const catId = document.getElementById('p-category-id').value;
+    if (catId) fd.append('category_id', catId);
+
+    const order = document.getElementById('p-display-order').value;
+    if (order !== '') fd.append('display_order', order);
+
+    const photo = document.getElementById('p-photo-filename').value.trim();
+    if (photo) fd.append('photo_filename', photo);
+
+    return fd;
+  }
+
+  async function submitProductForm(e) {
+    e.preventDefault();
+    const fd = buildProductFormData();
+    try {
+      let res;
+      if (editingProductId !== null) {
+        res = await fetch(`${apiUrl}/api/product/${editingProductId}?token=${token}`, { method: 'PUT', body: fd });
       } else {
-        alert("Failed to delete product.");
+        res = await fetch(`${apiUrl}/api/product?token=${token}`, { method: 'POST', body: fd });
       }
+      if (!res.ok) throw new Error(await res.text());
+      resetProductForm();
+      await fetchProducts();
+    } catch (err) {
+      alert('Ошибка: ' + err.message);
     }
+  }
 
-    // Function to edit a product
-    async function editProduct(id) {
-      const response = await fetch(`${apiUrl}/api/product/${id}?token=${token}`);
-      const product = await response.json();
+  async function editProduct(id) {
+    try {
+      const res  = await fetch(`${apiUrl}/api/product/${id}?token=${token}`);
+      const data = await res.json();
+      const p    = data.product || data;
 
-      // Fill the form with the current product data
-      document.getElementById("name").value = product.name;
-      document.getElementById("description").value = product.description;
-      document.getElementById("price").value = product.price;
-      document.getElementById("price_unit").value = product.price_unit;
-      document.getElementById("is_set").value = String(!!product.is_set);
-      document.getElementById("show_on_site").value = String(!!product.show_on_site);
-      document.getElementById("is_available").value = String(!!product.is_available);
-      
-      // Show the current product image
-      const productImage = document.createElement("img");
-      productImage.src = product.photo_url;
-      productImage.alt = "Product Image";
-      productImage.style.width = "100px";
-      const preview = document.getElementById("editPreview");
-      preview.innerHTML = "";
-      preview.appendChild(productImage);
+      editingProductId = id;
 
-      // Change the button action to update
-      const button = document.getElementById("addProductBtn");
-      button.textContent = "Update Product";
-      button.onclick = () => updateProduct(id);
+      document.getElementById('p-name').value           = p.name           || '';
+      document.getElementById('p-description').value    = p.description    || '';
+      document.getElementById('p-price').value          = p.price          != null ? p.price : '';
+      document.getElementById('p-price-unit').value     = p.price_unit     || '';
+      document.getElementById('p-display-order').value  = p.display_order  != null ? p.display_order : '';
+      document.getElementById('p-photo-filename').value = p.photo_url || '';
+      document.getElementById('p-is-set').value         = boolVal(p.is_set)       ? 'true' : 'false';
+      document.getElementById('p-show-on-site').value   = boolVal(p.show_on_site) ? 'true' : 'false';
+      document.getElementById('p-is-available').value   = boolVal(p.is_available) ? 'true' : 'false';
+
+      const catSel = document.getElementById('p-category-id');
+      catSel.value = p.category_id ? String(p.category_id) : '';
+
+      document.getElementById('product-form-title').textContent = 'Изменить товар';
+      document.getElementById('product-submit-btn').textContent = 'Обновить товар';
+
+      document.getElementById('product-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      alert('Ошибка загрузки товара: ' + err.message);
     }
+  }
 
-    // Function to update a product
-    async function updateProduct(id) {
-      const name = document.getElementById("name").value;
-      const description = document.getElementById("description").value;
-      const price = document.getElementById("price").value;
-      const priceUnit = document.getElementById("price_unit").value;
-      const photo = document.getElementById("photo").files[0];
-      const isSet = document.getElementById("is_set").value === "true";
-      const showOnSite = document.getElementById("show_on_site").value === "true";
-      const isAvailable = document.getElementById("is_available").value === "true";
-
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("price_unit", priceUnit);
-      formData.append("is_set", isSet);
-      formData.append("show_on_site", showOnSite);
-      formData.append("is_available", isAvailable);
-      if (photo) {
-        formData.append("photo", photo);
-      }
-
-      const response = await fetch(`${apiUrl}/api/product/${id}?token=${token}`, {
-        method: "PUT",
-        body: formData,
-      });
-
-      if (response.ok) {
-        alert("Product updated successfully!");
-        resetForm();
-        fetchProducts(); // Refresh product list
-      } else {
-        alert("Failed to update product.");
-      }
-
-      // Reset the form and button
-      document.getElementById("addProductBtn").textContent = "Add Product";
-      document.getElementById("addProductBtn").onclick = addProduct;
+  async function deleteProduct(id) {
+    if (!confirm('Удалить товар?')) return;
+    try {
+      const res = await fetch(`${apiUrl}/api/product/${id}?token=${token}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(await res.text());
+      await fetchProducts();
+    } catch (err) {
+      alert('Ошибка: ' + err.message);
     }
+  }
 
-    function resetForm() {
-        document.getElementById("name").value = "";
-        document.getElementById("description").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("price_unit").value = "100 г";
-        document.getElementById("photo").value = "";
+  function resetProductForm() {
+    editingProductId = null;
+    document.getElementById('product-form').reset();
+    // Explicitly restore select defaults after form.reset()
+    document.getElementById('p-is-set').value       = 'false';
+    document.getElementById('p-show-on-site').value = 'true';
+    document.getElementById('p-is-available').value = 'true';
+    document.getElementById('p-category-id').value  = '';
+    document.getElementById('product-form-title').textContent = 'Добавить товар';
+    document.getElementById('product-submit-btn').textContent = 'Добавить товар';
+  }
 
-        document.getElementById("is_set").value = "false";
-        document.getElementById("show_on_site").value = "true";
-        document.getElementById("is_available").value = "true";
-
-        const button = document.getElementById("addProductBtn");
-        button.textContent = "Add Product";
-        button.onclick = addProduct;
-
-        const oldImage = document.querySelector(".form-container img");
-        if (oldImage) oldImage.remove();
-
-        document.getElementById("editPreview").innerHTML = "";
-    }
-
-    // Add event listener to the add product button
-    document.getElementById("addProductBtn").onclick = addProduct;
-
-    document.getElementById("resetBtn").addEventListener("click", resetForm);
-
-    // Fetch products when the page loads
+  /* ─────────────────────────────────────────
+     Init
+  ───────────────────────────────────────── */
+  fetchCategories().then(() => {
+    populateCategoryFilters();
     fetchProducts();
-  </script>
+    fetchCategoriesTable();
+  });
+
+  showSection('products');
+</script>
 </body>
 </html>
