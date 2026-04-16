@@ -653,13 +653,17 @@ const Cart = (function () {
       const res  = await fetch(WORKER_URL, { method: 'POST', body: fd });
       const data = await res.json();
 
-      if (res.ok && data.ok && data.paymentUrl) {
+      if (res.ok && data.ok) {
         saveContact(panel);
         items = [];
         saveToStorage();
         updateBadge();
         close();
-        window.location.href = data.paymentUrl;
+        if (data.qrData) {
+          showSbpModal(data.qrData, data.paymentId, data.orderId, data.total);
+        } else if (data.paymentUrl) {
+          window.location.href = data.paymentUrl;
+        }
       } else {
         throw new Error(data.error || 'server');
       }
@@ -713,6 +717,92 @@ const Cart = (function () {
 
   function refreshMenuCards() {
     for (const item of items) updateMenuCard(item.id);
+  }
+
+  // ── СБП модалка ─────────────────────────────────────────────────────────
+
+  function showSbpModal(qrData, paymentId, orderId, total) {
+    const isMobile = navigator.maxTouchPoints > 0 || window.innerWidth <= 768;
+    const qrSrc    = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrData)}`;
+
+    // Spin animation
+    if (!document.getElementById('sbp-spin-style')) {
+      const s = document.createElement('style');
+      s.id = 'sbp-spin-style';
+      s.textContent = '@keyframes sbp-spin{to{transform:rotate(360deg)}}';
+      document.head.appendChild(s);
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = 'sbp-modal';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;padding:20px';
+
+    overlay.innerHTML = `
+      <div style="background:#2a2209;border:1px solid rgba(212,175,55,.3);border-radius:18px;
+                  padding:32px 28px;max-width:360px;width:100%;text-align:center">
+        <div style="color:#888;font-size:13px;margin-bottom:4px">Заказ ${orderId}</div>
+        <div style="color:#d4af37;font-size:26px;font-weight:800;margin-bottom:8px">${total} ₽</div>
+        <div style="color:#ccc;font-size:14px;margin-bottom:20px">Оплата через СБП</div>
+
+        ${!isMobile ? `
+          <img src="${qrSrc}" width="220" height="220" alt="QR СБП"
+               style="display:block;margin:0 auto 12px;border-radius:10px;background:#fff;padding:8px">
+          <div style="color:#aaa;font-size:13px;margin-bottom:16px">Отсканируйте QR-код приложением банка</div>
+        ` : ''}
+
+        <a id="sbp-open-btn" href="${qrData}"
+           style="display:block;background:#00b9f2;color:#fff;border-radius:30px;
+                  padding:14px 24px;font-size:15px;font-weight:700;text-decoration:none;margin-bottom:8px">
+          Открыть банковское приложение
+        </a>
+
+        ${!isMobile ? `<div style="color:#666;font-size:12px;margin-bottom:16px">Или нажмите кнопку выше если платите с этого устройства</div>` : ''}
+
+        <div id="sbp-status" style="color:#888;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0">
+          <span style="display:inline-block;width:13px;height:13px;border:2px solid #d4af37;
+                       border-top-color:transparent;border-radius:50%;animation:sbp-spin .8s linear infinite;flex-shrink:0"></span>
+          Ожидаем подтверждение оплаты…
+        </div>
+
+        <button id="sbp-cancel-btn"
+                style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#666;
+                       border-radius:20px;padding:7px 20px;font-size:13px;cursor:pointer">
+          Отмена
+        </button>
+      </div>`;
+
+    document.body.appendChild(overlay);
+
+    const statusEl = overlay.querySelector('#sbp-status');
+    const cancelBtn = overlay.querySelector('#sbp-cancel-btn');
+
+    // Polling
+    let attempts = 0;
+    const pollId = setInterval(async () => {
+      if (++attempts > 100) { // ~5 min
+        clearInterval(pollId);
+        statusEl.innerHTML = '<span style="color:#e74c3c">Время ожидания истекло. Попробуйте ещё раз.</span>';
+        return;
+      }
+      try {
+        const r = await fetch(`${WORKER_URL}/status?paymentId=${paymentId}`);
+        const d = await r.json();
+        if (d.status === 'CONFIRMED') {
+          clearInterval(pollId);
+          overlay.remove();
+          window.location.href = `${location.origin}${location.pathname}?payment=success`;
+        } else if (d.status === 'REJECTED' || d.status === 'CANCELED') {
+          clearInterval(pollId);
+          overlay.remove();
+          window.location.href = `${location.origin}${location.pathname}?payment=fail`;
+        }
+      } catch { /* ignore */ }
+    }, 3000);
+
+    cancelBtn.addEventListener('click', () => {
+      clearInterval(pollId);
+      overlay.remove();
+    });
   }
 
   return { add, remove, setQty, open, close, getItem, refreshMenuCards };
