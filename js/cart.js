@@ -11,8 +11,9 @@ const Cart = (function () {
   const WORKER_URL  = 'https://syto-preorder.syto-kitchen.workers.dev'; // тот же воркер, что и предзаказы
 
   // ---- Настройки доставки ----
-  const DELIVERY_FREE_FROM = 2000;  // от этой суммы доставка бесплатна, ₽
-  const DELIVERY_FEE       = 200;   // стоимость доставки, ₽
+  const ORDER_MIN          = 600;   // минимальная сумма заказа, ₽
+  const DELIVERY_FREE_FROM = 1500;  // от этой суммы доставка бесплатна, ₽
+  const DELIVERY_FEE       = 170;   // стоимость доставки, ₽
 
 
   let items      = [];   // [{id, name, price, price_unit, qty}]
@@ -48,8 +49,9 @@ const Cart = (function () {
       house:      form.querySelector('[name="house"]')?.value.trim()    || '',
       entrance:   form.querySelector('[name="entrance"]')?.value.trim() || '',
       apt:        form.querySelector('[name="apt"]')?.value.trim()      || '',
+      floor:      form.querySelector('[name="floor"]')?.value.trim()    || '',
       time_window: form.querySelector('[name="time_window"]:checked')?.value || '',
-      pet:         form.querySelector('[name="pet"]')?.checked || false,
+      cutlery:     form.querySelector('[name="cutlery"]')?.checked || false,
     };
     localStorage.setItem(CONTACT_KEY, JSON.stringify(contact));
   }
@@ -74,7 +76,7 @@ const Cart = (function () {
   function add(product) {
     const existing = items.find(i => i.id === product.id);
     const is100g   = String(product.price_unit || '').trim() === '100 г';
-    const defaultQ = is100g ? 3 : 1;   // 300 г по умолчанию для весовых
+    const defaultQ = is100g ? 2 : 1;   // 200 г по умолчанию для весовых
 
     if (existing) {
       existing.qty += defaultQ;
@@ -312,7 +314,8 @@ const Cart = (function () {
             <span>Итого</span><span>${grandTotal} ₽</span>
           </div>
         </div>
-        <button class="btn-primary" id="to-checkout-btn">
+        ${subtotal < ORDER_MIN ? `<div class="cart-min-warning">Минимальная сумма заказа — ${ORDER_MIN} ₽</div>` : ''}
+        <button class="btn-primary" id="to-checkout-btn"${subtotal < ORDER_MIN ? ' disabled' : ''}>
           Оформить заказ →
         </button>`;
     } else {
@@ -496,35 +499,51 @@ const Cart = (function () {
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="chk-apt">Квартира *</label>
-            <input id="chk-apt" name="apt" type="text" required placeholder="42"
-                   value="${escHtml(contact.apt || '')}">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="chk-apt">Квартира *</label>
+              <input id="chk-apt" name="apt" type="text" required placeholder="42"
+                     value="${escHtml(contact.apt || '')}">
+            </div>
+            <div class="form-group">
+              <label for="chk-floor">Этаж</label>
+              <input id="chk-floor" name="floor" type="text" placeholder="5"
+                     value="${escHtml(contact.floor || '')}">
+            </div>
           </div>
 
           ${buildTimeWindowsHtml()}
 
+          <!--
           <div class="form-group">
             <label class="pet-option">
               <input type="checkbox" name="pet"${contact.pet ? ' checked' : ''}>
               <span>Питомец составит компанию? 🐾</span>
             </label>
           </div>
+          -->
+
+          <div class="form-group">
+            <label class="pet-option">
+              <input type="checkbox" name="cutlery"${contact.cutlery ? ' checked' : ''}>
+              <span>Нужны приборы?</span>
+            </label>
+          </div>
 
           <div class="form-group">
             <label for="chk-comment">Комментарий к заказу</label>
             <textarea id="chk-comment" name="comment" rows="3"
-                      placeholder="Домофон, этаж, пожелания к заказу..."></textarea>
+                      placeholder="Комментарий или пожелание к заказу..."></textarea>
           </div>
 
           <div class="payment-note">
-            💳 Оплата при получении: наличные или банковская карта через терминал курьера.
+            💳 Оплата производится онлайн на сайте.
           </div>
 
         </form>
       </div>
       <div class="cart-footer">
-        <button class="btn-primary" id="submit-order-btn"${getAvailableWindows().length === 0 ? ' disabled' : ''}>Отправить заказ</button>
+        <button class="btn-primary" id="submit-order-btn">Отправить заказ</button>
       </div>`;
   }
 
@@ -596,8 +615,9 @@ const Cart = (function () {
     const house      = form.querySelector('[name="house"]').value.trim();
     const entrance   = form.querySelector('[name="entrance"]').value.trim();
     const apt        = form.querySelector('[name="apt"]').value.trim();
+    const floor      = form.querySelector('[name="floor"]')?.value.trim() || '';
     const timeWindow = form.querySelector('[name="time_window"]:checked')?.value || '';
-    const pet        = form.querySelector('[name="pet"]')?.checked || false;
+    const cutlery    = form.querySelector('[name="cutlery"]')?.checked || false;
     const comment    = form.querySelector('[name="comment"]').value.trim();
 
     if (!name)                                         { alert('Пожалуйста, укажите ФИО.');                    return; }
@@ -607,7 +627,7 @@ const Cart = (function () {
     if (!apt)                                          { alert('Пожалуйста, укажите квартиру.');               return; }
     if (!timeWindow)                                   { alert('Пожалуйста, выберите время доставки.');        return; }
 
-    const address    = `ул. ${street}, д. ${house}${entrance ? ', подъезд ' + entrance : ''}, кв. ${apt}`;
+    const address    = `ул. ${street}, д. ${house}${entrance ? ', подъезд ' + entrance : ''}${floor ? ', этаж ' + floor : ''}, кв. ${apt}`;
     const subtotal   = totalPrice();
     const delivery   = deliveryCost(subtotal);
     const grandTotal = subtotal + delivery;
@@ -626,20 +646,22 @@ const Cart = (function () {
       fd.append('subtotal',    subtotal);
       fd.append('delivery',    delivery === 0 ? 'Бесплатно' : `${delivery} ₽`);
       fd.append('total',       grandTotal);
-      fd.append('pet',         pet ? 'yes' : 'no');
+      fd.append('cutlery',     cutlery ? 'yes' : 'no');
       fd.append('comment',     comment);
+      fd.append('return_url',  window.location.origin + window.location.pathname);
 
-      const res = await fetch(WORKER_URL, { method: 'POST', body: fd });
+      const res  = await fetch(WORKER_URL, { method: 'POST', body: fd });
+      const data = await res.json();
 
-      if (res.ok) {
+      if (res.ok && data.ok && data.paymentUrl) {
         saveContact(panel);
         items = [];
         saveToStorage();
         updateBadge();
         close();
-        showToast('Заказ отправлен! Скоро вам позвоним.');
+        window.location.href = data.paymentUrl;
       } else {
-        throw new Error('server');
+        throw new Error(data.error || 'server');
       }
     } catch {
       alert('Не удалось отправить заказ. Попробуйте ещё раз или позвоните нам:\n+7 (950) 037-13-96');

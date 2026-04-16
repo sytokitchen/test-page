@@ -24,7 +24,10 @@
   <!-- ===== HEADER ===== -->
   <header id="site-header">
     <div class="header-inner">
-      <div class="brand"><h1>СыТО</h1></div>
+      <div class="brand">
+        <h1>СыТО</h1>
+        <span class="brand-tagline">место вкусной еды</span>
+      </div>
 
       <nav id="main-nav" aria-label="Главное меню">
         <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-label="Открыть меню">≡</button>
@@ -114,9 +117,9 @@
           <h3 class="delivery-card-title">Время доставки</h3>
           <p class="delivery-text">Доставляем в двухчасовых интервалах с 10:00 до 20:00 — или как можно быстрее, если вы очень голодны.</p>
           <div class="delivery-table">
-            <div class="delivery-row">
+            <div class="delivery-row delivery-row--stacked">
               <span class="delivery-label">Интервалы</span>
-              <span class="delivery-value">10–12, 12–14, 14–16, 16–18, 18–20</span>
+              <span class="delivery-value">10–12 · 12–14 · 14–16 · 16–18 · 18–20</span>
             </div>
           </div>
         </div>
@@ -126,11 +129,15 @@
           <h3 class="delivery-card-title">Стоимость доставки</h3>
           <div class="delivery-table">
             <div class="delivery-row">
-              <span class="delivery-label">Заказ до 2 000 ₽</span>
-              <span class="delivery-value">200 ₽</span>
+              <span class="delivery-label">Минимальный заказ</span>
+              <span class="delivery-value">600 ₽</span>
             </div>
             <div class="delivery-row">
-              <span class="delivery-label">Заказ от 2 000 ₽</span>
+              <span class="delivery-label">Заказ до 1 500 ₽</span>
+              <span class="delivery-value">170 ₽</span>
+            </div>
+            <div class="delivery-row">
+              <span class="delivery-label">Заказ от 1 500 ₽</span>
               <span class="delivery-value delivery-value--free">Бесплатно</span>
             </div>
           </div>
@@ -139,7 +146,7 @@
         <div class="delivery-card">
           <div class="delivery-card-icon">💳</div>
           <h3 class="delivery-card-title">Оплата</h3>
-          <p class="delivery-text">Оплата при получении — наличными или картой через терминал курьера.</p>
+          <p class="delivery-text">Оплата производится онлайн на сайте при оформлении заказа.</p>
         </div>
 
       </div>
@@ -150,7 +157,7 @@
       <h2 class="section-title">Контакты</h2>
       <p class="contact-item">📍 Санкт-Петербург, Кудрово, ул. Строителей, 16</p>
       <p class="contact-item">📞 <a href="tel:+79500371396" style="color:inherit">+7 (950) 037-13-96</a></p>
-      <p class="contact-item">🕒 Ежедневно 11:00 — 22:00</p>
+      <p class="contact-item">🕒 Ежедневно 11:00 — 21:00</p>
       <div class="map-wrap">
         <iframe
           title="Yandex Map — СыТО"
@@ -226,6 +233,54 @@
     /* --- Открытие/закрытие корзины --- */
     document.getElementById('cart-btn').addEventListener('click', () => Cart.open());
     document.getElementById('cart-overlay').addEventListener('click', () => Cart.close());
+  </script>
+
+  <!-- ===== PAYMENT RESULT MODAL ===== -->
+  <div id="payment-modal" style="display:none;position:fixed;inset:0;z-index:9000;
+       background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#2a2209;border:1px solid rgba(212,175,55,.3);border-radius:18px;
+                padding:36px 32px;max-width:380px;width:100%;text-align:center">
+      <div id="payment-modal-icon" style="font-size:52px;margin-bottom:12px"></div>
+      <h2 id="payment-modal-title" style="margin:0 0 10px;color:#d4af37;font-size:22px"></h2>
+      <p id="payment-modal-text" style="margin:0 0 24px;color:#ccc;font-size:15px;line-height:1.5"></p>
+      <button onclick="closePaymentModal()"
+              style="background:#d4af37;color:#1e1a0e;border:none;border-radius:30px;
+                     padding:12px 32px;font-size:15px;font-weight:700;cursor:pointer">
+        Хорошо
+      </button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const params  = new URLSearchParams(location.search);
+      const payment = params.get('payment');
+      if (!payment) return;
+
+      // Clean URL without reload
+      history.replaceState(null, '', location.pathname);
+
+      const modal = document.getElementById('payment-modal');
+      const icon  = document.getElementById('payment-modal-icon');
+      const title = document.getElementById('payment-modal-title');
+      const text  = document.getElementById('payment-modal-text');
+
+      if (payment === 'success') {
+        icon.textContent  = '✅';
+        title.textContent = 'Оплата прошла успешно!';
+        text.textContent  = 'Ваш заказ принят. Скоро мы свяжемся с вами для подтверждения времени доставки.';
+      } else {
+        icon.textContent  = '❌';
+        title.textContent = 'Оплата не прошла';
+        text.textContent  = 'Что-то пошло не так. Попробуйте ещё раз или позвоните нам: +7 (950) 037-13-96';
+      }
+
+      modal.style.display = 'flex';
+    })();
+
+    function closePaymentModal() {
+      document.getElementById('payment-modal').style.display = 'none';
+    }
   </script>
 
 </body>

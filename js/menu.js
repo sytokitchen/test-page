@@ -40,6 +40,19 @@ function productCardHtml(p) {
        </div>`
     : '<div></div>';
 
+  let nutritionHtml = '';
+  if (p.nutrition) {
+    const parts = p.nutrition.split(/\s+/);
+    if (parts.length === 4) {
+      nutritionHtml = `<div class="product-nutrition">
+        <span>🔥 ${parts[0]} ккал</span>
+        <span>Б ${parts[1]}</span>
+        <span>Ж ${parts[2]}</span>
+        <span>У ${parts[3]}</span>
+      </div>`;
+    }
+  }
+
   const availBadge = available
     ? `<span class="avail-badge avail-badge--yes"><span class="avail-dot avail-dot--green"></span>В наличии</span>`
     : `<span class="avail-badge avail-badge--no"><span class="avail-dot avail-dot--red"></span>Нет в наличии</span>`;
@@ -57,6 +70,7 @@ function productCardHtml(p) {
         ${desc
           ? `<p class="product-desc">${desc}</p>`
           : `<p class="product-desc" style="opacity:.5">Описание скоро добавим.</p>`}
+        ${nutritionHtml}
         <div class="product-footer">
           <div class="product-footer-left">
             ${priceBlock}

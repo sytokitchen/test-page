@@ -246,6 +246,11 @@
       gap: 6px;
       white-space: nowrap;
     }
+    .td-ellip {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
     /* ── Page heading ── */
     .page-title {
@@ -367,6 +372,11 @@
             </select>
           </div>
 
+          <div class="form-group" style="grid-column: span 2">
+            <label>КБЖУ (ккал белки жиры углеводы через пробел)</label>
+            <input id="p-nutrition" type="text" placeholder="525.5 25.5 25.5 25.5">
+          </div>
+
         </div>
 
         <div class="form-actions">
@@ -409,23 +419,37 @@
     <!-- Products table -->
     <div class="card">
       <div class="table-wrap">
-        <table id="products-table">
+        <table id="products-table" style="table-layout:fixed;width:100%">
+          <colgroup>
+            <col style="width:13%">
+            <col>
+            <col style="width:9%">
+            <col style="width:3%">
+            <col style="width:4%">
+            <col style="width:4%">
+            <col style="width:9%">
+            <col style="width:3%">
+            <col style="width:3%">
+            <col style="width:3%">
+            <col style="width:5%">
+          </colgroup>
           <thead>
             <tr>
               <th>Название</th>
               <th>Описание</th>
               <th>Категория</th>
-              <th>Порядок</th>
+              <th>№</th>
               <th>Цена</th>
               <th>Ед.</th>
+              <th>КБЖУ</th>
               <th>Сет</th>
-              <th>Показ.</th>
-              <th>Доступ.</th>
-              <th>Действия</th>
+              <th>Пок.</th>
+              <th>Дост.</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="products-tbody">
-            <tr><td colspan="10" style="text-align:center;color:#999;">Загрузка...</td></tr>
+            <tr><td colspan="11" style="text-align:center;color:#999;">Загрузка...</td></tr>
           </tbody>
         </table>
       </div>
@@ -655,7 +679,7 @@
   ───────────────────────────────────────── */
   async function fetchProducts() {
     const tbody = document.getElementById('products-tbody');
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#999;">Загрузка...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#999;">Загрузка...</td></tr>';
     try {
       const res  = await fetch(`${apiUrl}/api/products?token=${token}`);
       const data = await res.json();
@@ -663,31 +687,31 @@
       applyFilters();
     } catch (e) {
       console.error('fetchProducts error', e);
-      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#f44336;">Ошибка загрузки товаров</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#f44336;">Ошибка загрузки товаров</td></tr>';
     }
   }
 
   function renderProductsTable(list) {
     const tbody = document.getElementById('products-tbody');
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#999;">Нет товаров</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#999;">Нет товаров</td></tr>';
       return;
     }
     tbody.innerHTML = list.map(p => `
       <tr>
-        <td>${escHtml(p.name || '')}</td>
-        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
-            title="${escHtml(p.description || '')}">${escHtml(p.description || '')}</td>
-        <td>${escHtml(categoriesMap[p.category_id] || (p.category_id ? '#' + p.category_id : '—'))}</td>
+        <td class="td-ellip">${escHtml(p.name || '')}</td>
+        <td class="td-ellip" title="${escHtml(p.description || '')}">${escHtml(p.description || '')}</td>
+        <td class="td-ellip">${escHtml(categoriesMap[p.category_id] || (p.category_id ? '#' + p.category_id : '—'))}</td>
         <td>${p.display_order != null ? p.display_order : ''}</td>
         <td>${p.price != null ? p.price : ''}</td>
         <td>${escHtml(p.price_unit || '')}</td>
+        <td style="font-size:11px;color:#999;">${escHtml(p.nutrition || '')}</td>
         <td>${checkMark(p.is_set)}</td>
         <td>${checkMark(p.show_on_site)}</td>
         <td>${checkMark(p.is_available)}</td>
-        <td class="td-actions">
-          <button class="btn-edit"   onclick="editProduct(${p.id})">Изменить</button>
-          <button class="btn-danger" onclick="deleteProduct(${p.id})">Удалить</button>
+        <td>
+          <button class="btn-edit" onclick="editProduct(${p.id})" title="Изменить" style="padding:3px 7px;font-size:13px;">✎</button>
+          <button class="btn-danger" onclick="deleteProduct(${p.id})" title="Удалить" style="padding:3px 7px;font-size:13px;">✕</button>
         </td>
       </tr>
     `).join('');
@@ -735,11 +759,26 @@
     const photo = document.getElementById('p-photo-filename').value.trim();
     if (photo) fd.append('photo_filename', photo);
 
+    const nutrition = document.getElementById('p-nutrition').value.trim();
+    if (nutrition) fd.append('nutrition', nutrition);
+
     return fd;
+  }
+
+  function validateNutrition(val) {
+    if (!val) return true; // пустое — ОК
+    const parts = val.split(/\s+/);
+    if (parts.length !== 4) return false;
+    return parts.every(p => /^\d+([.,]\d+)?$/.test(p));
   }
 
   async function submitProductForm(e) {
     e.preventDefault();
+    const nutritionVal = document.getElementById('p-nutrition').value.trim();
+    if (nutritionVal && !validateNutrition(nutritionVal)) {
+      alert('КБЖУ: укажите 4 числа через пробел.\nПример: 525.5 25.5 25.5 25.5');
+      return;
+    }
     const fd = buildProductFormData();
     try {
       let res;
@@ -770,6 +809,7 @@
       document.getElementById('p-price-unit').value     = p.price_unit     || '';
       document.getElementById('p-display-order').value  = p.display_order  != null ? p.display_order : '';
       document.getElementById('p-photo-filename').value = p.photo_url || '';
+      document.getElementById('p-nutrition').value      = p.nutrition || '';
       document.getElementById('p-is-set').value         = boolVal(p.is_set)       ? 'true' : 'false';
       document.getElementById('p-show-on-site').value   = boolVal(p.show_on_site) ? 'true' : 'false';
       document.getElementById('p-is-available').value   = boolVal(p.is_available) ? 'true' : 'false';
