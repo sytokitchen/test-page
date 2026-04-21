@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Syto Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -295,6 +297,8 @@
     <a id="nav-products"   onclick="showSection('products')">Товары</a>
     <a id="nav-categories" onclick="showSection('categories')">Категории</a>
     <a id="nav-orders"     onclick="showSection('orders')">Заказы</a>
+    <a id="nav-excel"      onclick="showSection('excel')">Excel</a>
+    <a id="nav-removed"    onclick="showSection('removed')">Удалённые</a>
   </nav>
 </div>
 
@@ -498,6 +502,95 @@
     </div>
   </div>
 
+  <!-- ══════════════ EXCEL SECTION ══════════════ -->
+  <div id="section-excel" class="section">
+    <div class="page-title">Импорт / Экспорт Excel</div>
+
+    <div class="card" style="max-width:560px">
+      <h3 style="margin-bottom:12px">Экспорт меню</h3>
+      <p style="color:#666;font-size:14px;margin-bottom:16px">
+        Скачать все категории и товары в Excel файл с выпадающими списками для удобного редактирования.
+      </p>
+      <button class="btn" onclick="exportToExcel()" id="export-btn">⬇ Скачать Excel</button>
+    </div>
+
+    <div class="card" style="max-width:560px;margin-top:16px">
+      <h3 style="margin-bottom:12px">Импорт меню</h3>
+      <p style="color:#666;font-size:14px;margin-bottom:8px">
+        Загрузите отредактированный Excel файл. Товары сопоставляются по названию:
+      </p>
+      <ul style="color:#666;font-size:13px;margin-bottom:16px;padding-left:20px;line-height:1.8">
+        <li>Название есть в файле и в БД → <b>обновить</b></li>
+        <li>Название только в файле → <b>добавить</b></li>
+        <li>Название только в БД → <b>удалить</b></li>
+      </ul>
+      <input type="file" id="import-file" accept=".xlsx,.xls" style="margin-bottom:12px;display:block">
+      <button class="btn" onclick="importFromExcel()" id="import-btn">⬆ Импортировать</button>
+      <div id="import-result" style="margin-top:14px;font-size:14px;white-space:pre-line"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ REMOVED PRODUCTS SECTION ══════════════ -->
+  <div id="section-removed" class="section">
+    <div class="page-title">Удалённые при импорте товары</div>
+
+    <div class="filter-bar">
+      <div class="form-group">
+        <label>Поиск по названию</label>
+        <input type="text" id="rm-search" placeholder="Поиск..." oninput="applyRemovedFilters()" />
+      </div>
+      <div class="form-group">
+        <label>Категория</label>
+        <select id="rm-cat" onchange="applyRemovedFilters()">
+          <option value="">Все</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Дата удаления от</label>
+        <input type="date" id="rm-date-from" onchange="applyRemovedFilters()" />
+      </div>
+      <div class="form-group">
+        <label>Дата удаления до</label>
+        <input type="date" id="rm-date-to" onchange="applyRemovedFilters()" />
+      </div>
+      <div class="form-group" style="justify-content:flex-end">
+        <button class="btn-secondary" onclick="fetchRemovedProducts()" style="margin-top:18px">Обновить</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table style="table-layout:fixed;width:100%">
+          <colgroup>
+            <col style="width:16%">
+            <col style="width:14%">
+            <col>
+            <col style="width:7%">
+            <col style="width:8%">
+            <col style="width:8%">
+            <col style="width:8%">
+            <col style="width:14%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Категория</th>
+              <th>Описание</th>
+              <th>Цена</th>
+              <th>Ед.</th>
+              <th>КБЖУ</th>
+              <th>Пок./Дост.</th>
+              <th>Удалён</th>
+            </tr>
+          </thead>
+          <tbody id="removed-tbody">
+            <tr><td colspan="8" style="text-align:center;color:#999;">Загрузка...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- ══════════════ ORDERS SECTION ══════════════ -->
   <div id="section-orders" class="section">
     <div class="page-title">Заказы</div>
@@ -540,6 +633,8 @@
 
     document.getElementById('section-' + name).classList.add('active');
     document.getElementById('nav-' + name).classList.add('active');
+
+    if (name === 'removed') fetchRemovedProducts();
   }
 
   /* ─────────────────────────────────────────
@@ -847,6 +942,241 @@
     document.getElementById('p-category-id').value  = '';
     document.getElementById('product-form-title').textContent = 'Добавить товар';
     document.getElementById('product-submit-btn').textContent = 'Добавить товар';
+  }
+
+  /* ─────────────────────────────────────────
+     Excel Export
+  ───────────────────────────────────────── */
+  async function exportToExcel() {
+    const btn = document.getElementById('export-btn');
+    btn.disabled = true; btn.textContent = 'Загрузка...';
+    try {
+      const res  = await fetch(`${apiUrl}/api/export?token=${token}`);
+      const data = await res.json();
+
+      const wb = XLSX.utils.book_new();
+
+      // Sheet 1: Категории
+      const catData = [['Название', 'Порядок']];
+      for (const c of data.categories) catData.push([c.name, c.display_order]);
+      const wsCat = XLSX.utils.aoa_to_sheet(catData);
+      wsCat['!cols'] = [{wch: 30}, {wch: 10}];
+      XLSX.utils.book_append_sheet(wb, wsCat, 'Категории');
+
+      // Sheet 2: Товары
+      const headers = ['Категория','Название','Описание','Цена','Единица','На сайте','Доступен','Сет','Порядок','Калории','БЖУ','Фото'];
+      const prodData = [headers];
+      for (const p of data.products) {
+        let calories = '', bju = '';
+        if (p.nutrition) {
+          const parts = String(p.nutrition).trim().split(/\s+/);
+          calories = parts[0] || '';
+          bju = parts.slice(1).join(' ');
+        }
+        prodData.push([
+          p.category_name || '', p.name, p.description || '',
+          p.price, p.price_unit || '100 г',
+          p.show_on_site ? 'да' : 'нет',
+          p.is_available ? 'да' : 'нет',
+          p.is_set ? 'да' : 'нет',
+          p.display_order, calories, bju, p.photo_url || ''
+        ]);
+      }
+      const wsProd = XLSX.utils.aoa_to_sheet(prodData);
+      wsProd['!cols'] = [{wch:20},{wch:30},{wch:40},{wch:8},{wch:10},{wch:10},{wch:10},{wch:6},{wch:10},{wch:10},{wch:20},{wch:25}];
+
+      XLSX.utils.book_append_sheet(wb, wsProd, 'Товары');
+
+      // Inject dataValidations via JSZip (SheetJS CE doesn't write them)
+      const maxRow = Math.max(data.products.length + 50, 200);
+      const catCount = data.categories.length;
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const zip = await JSZip.loadAsync(wbout);
+
+      // sheet2.xml = Товары (sheet order: 1=Категории, 2=Товары)
+      let sheetXml = await zip.file('xl/worksheets/sheet2.xml').async('text');
+
+      const dv = (sqref, formula1) =>
+        `<dataValidation type="list" allowBlank="1" showDropDown="0" showErrorMessage="1" errorStyle="stop" ` +
+        `errorTitle="Недопустимое значение" error="Выберите значение из списка" sqref="${sqref}">` +
+        `<formula1>${formula1}</formula1></dataValidation>`;
+
+      const dvXml =
+        `<dataValidations count="5">` +
+        dv(`A2:A${maxRow}`, `OFFSET(Категории!$A$2,0,0,COUNTA(Категории!$A:$A)-1,1)`) +
+        dv(`E2:E${maxRow}`, `"100 г,шт,порция"`) +
+        dv(`F2:F${maxRow}`, `"да,нет"`) +
+        dv(`G2:G${maxRow}`, `"да,нет"`) +
+        dv(`H2:H${maxRow}`, `"да,нет"`) +
+        `</dataValidations>`;
+
+      sheetXml = sheetXml.replace('</worksheet>', dvXml + '</worksheet>');
+      zip.file('xl/worksheets/sheet2.xml', sheetXml);
+
+      const finalBuf = await zip.generateAsync({ type: 'arraybuffer' });
+      const blob = new Blob([finalBuf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'syto-menu.xlsx'; a.click();
+      URL.revokeObjectURL(url);
+
+      // Отправить в Telegram (не блокируем загрузку — fire & forget)
+      try {
+        const tgForm = new FormData();
+        tgForm.append('file', blob, 'syto-menu.xlsx');
+        await fetch(`${apiUrl}/api/export-notify?token=${token}`, { method: 'POST', body: tgForm });
+      } catch (tgErr) {
+        console.warn('Telegram notify failed:', tgErr);
+      }
+    } catch(e) {
+      alert('Ошибка экспорта: ' + e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = '⬇ Скачать Excel';
+    }
+  }
+
+  /* ─────────────────────────────────────────
+     Excel Import
+  ───────────────────────────────────────── */
+  async function importFromExcel() {
+    const file = document.getElementById('import-file').files[0];
+    if (!file) { alert('Выберите файл'); return; }
+
+    const btn = document.getElementById('import-btn');
+    const resultEl = document.getElementById('import-result');
+    btn.disabled = true; btn.textContent = 'Импорт...';
+    resultEl.textContent = '';
+
+    try {
+      const ab = await file.arrayBuffer();
+      const wb = XLSX.read(ab);
+
+      // Parse categories
+      const wsCat = wb.Sheets['Категории'];
+      if (!wsCat) throw new Error('Лист "Категории" не найден');
+      const catRows = XLSX.utils.sheet_to_json(wsCat, { header: 1 });
+      const categories = [];
+      for (let i = 1; i < catRows.length; i++) {
+        const row = catRows[i];
+        if (!row[0]) continue;
+        categories.push({ name: String(row[0]).trim(), display_order: Number(row[1]) || 100000 });
+      }
+
+      // Parse products
+      const wsProd = wb.Sheets['Товары'];
+      if (!wsProd) throw new Error('Лист "Товары" не найден');
+      const prodRows = XLSX.utils.sheet_to_json(wsProd, { header: 1 });
+      const products = [];
+      for (let i = 1; i < prodRows.length; i++) {
+        const r = prodRows[i];
+        if (!r[1]) continue;
+        products.push({
+          category_name: String(r[0] || '').trim(),
+          name:          String(r[1]).trim(),
+          description:   String(r[2] || '').trim(),
+          price:         parseFloat(r[3]) || 0,
+          price_unit:    String(r[4] || '100 г').trim(),
+          show_on_site:  String(r[5]).toLowerCase() === 'да',
+          is_available:  String(r[6]).toLowerCase() === 'да',
+          is_set:        String(r[7]).toLowerCase() === 'да',
+          display_order: parseInt(r[8]) || 10000000,
+          calories:      String(r[9] || '').trim(),
+          bju:           String(r[10] || '').trim(),
+          photo_url:     String(r[11] || '').trim() || null,
+        });
+      }
+
+      if (categories.length === 0) throw new Error('Нет категорий в файле');
+      if (products.length === 0)   throw new Error('Нет товаров в файле');
+
+      const res    = await fetch(`${apiUrl}/api/import?token=${token}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categories, products }),
+      });
+      const result = await res.json();
+
+      if (result.ok) {
+        const s = result.stats;
+        resultEl.style.color = '#27ae60';
+        resultEl.textContent =
+          `✅ Импорт завершён!\n\n` +
+          `Категории: +${s.added_cats} добавлено, ✏️ ${s.updated_cats} обновлено, 🗑️ ${s.deleted_cats} удалено\n` +
+          `Товары:    +${s.added_prods} добавлено, ✏️ ${s.updated_prods} обновлено, 🗑️ ${s.deleted_prods} удалено`;
+        fetchCategories().then(() => { populateCategoryFilters(); fetchProducts(); fetchCategoriesTable(); });
+      } else {
+        throw new Error(result.error || 'Неизвестная ошибка');
+      }
+    } catch(e) {
+      resultEl.style.color = '#e74c3c';
+      resultEl.textContent = '❌ Ошибка: ' + e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = '⬆ Импортировать';
+    }
+  }
+
+  /* ─────────────────────────────────────────
+     Removed Products
+  ───────────────────────────────────────── */
+  let allRemoved = [];
+
+  async function fetchRemovedProducts() {
+    const tbody = document.getElementById('removed-tbody');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#999;">Загрузка...</td></tr>';
+    try {
+      const res  = await fetch(`${apiUrl}/api/removed-products?token=${token}`);
+      const data = await res.json();
+      allRemoved = Array.isArray(data) ? data : [];
+      populateRemovedCatFilter();
+      applyRemovedFilters();
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#f44336;">Ошибка загрузки</td></tr>';
+    }
+  }
+
+  function populateRemovedCatFilter() {
+    const sel = document.getElementById('rm-cat');
+    const cur = sel.value;
+    const cats = [...new Set(allRemoved.map(r => r.category_name || '').filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">Все</option>' +
+      cats.map(c => `<option value="${escHtml(c)}"${c === cur ? ' selected' : ''}>${escHtml(c)}</option>`).join('');
+  }
+
+  function applyRemovedFilters() {
+    const search   = document.getElementById('rm-search').value.toLowerCase();
+    const cat      = document.getElementById('rm-cat').value;
+    const dateFrom = document.getElementById('rm-date-from').value;
+    const dateTo   = document.getElementById('rm-date-to').value;
+
+    const filtered = allRemoved.filter(r => {
+      if (search && !(r.name || '').toLowerCase().includes(search)) return false;
+      if (cat && (r.category_name || '') !== cat) return false;
+      if (dateFrom && r.removed_at < dateFrom) return false;
+      if (dateTo   && r.removed_at.slice(0, 10) > dateTo) return false;
+      return true;
+    });
+    renderRemovedTable(filtered);
+  }
+
+  function renderRemovedTable(list) {
+    const tbody = document.getElementById('removed-tbody');
+    if (!list.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#999;">Нет записей</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(r => {
+      const dt = r.removed_at ? r.removed_at.replace('T', ' ').slice(0, 16) : '—';
+      return `<tr>
+        <td class="td-ellip" title="${escHtml(r.name || '')}">${escHtml(r.name || '')}</td>
+        <td class="td-ellip">${escHtml(r.category_name || '—')}</td>
+        <td class="td-ellip" title="${escHtml(r.description || '')}">${escHtml(r.description || '')}</td>
+        <td>${r.price != null ? r.price : ''}</td>
+        <td>${escHtml(r.price_unit || '')}</td>
+        <td style="font-size:11px;color:#999;">${escHtml(r.nutrition || '')}</td>
+        <td>${checkMark(r.show_on_site)} / ${checkMark(r.is_available)}</td>
+        <td style="font-size:12px;color:#888;">${dt}</td>
+      </tr>`;
+    }).join('');
   }
 
   /* ─────────────────────────────────────────
