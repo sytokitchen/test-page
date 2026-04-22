@@ -11,7 +11,7 @@ const Cart = (function () {
   const WORKER_URL  = 'https://syto-preorder.syto-kitchen.workers.dev'; // тот же воркер, что и предзаказы
 
   // ---- Настройки доставки ----
-  const ORDER_MIN          = 600;   // минимальная сумма заказа, ₽
+  const ORDER_MIN          = 100;   // минимальная сумма заказа, ₽
   const DELIVERY_FREE_FROM = 1500;  // от этой суммы доставка бесплатна, ₽
   const DELIVERY_FEE       = 170;   // стоимость доставки, ₽
 
@@ -644,7 +644,7 @@ const Cart = (function () {
       fd.append('address',     address);
       fd.append('time_window', timeWindow);
       fd.append('items',       items.map(formatOrderLine).join('\n'));
-      fd.append('items_json',  JSON.stringify(items.map(i => ({ name: i.name, price: i.price, qty: i.qty }))));
+      fd.append('items_json',  JSON.stringify(items.map(i => ({ name: i.name, price: i.price, qty: i.qty, unit: i.price_unit || 'шт' }))));
       fd.append('subtotal',    subtotal);
       fd.append('delivery',    delivery === 0 ? 'Бесплатно' : `${delivery} ₽`);
       fd.append('delivery_amount', delivery);
