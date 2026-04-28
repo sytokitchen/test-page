@@ -214,19 +214,14 @@ function setupCatObserver(catLinks, catStrip) {
    Инициализация
    ====================================================== */
 
-window.addEventListener('load', async () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const menuStatus = document.getElementById('menu-status');
 
   try {
-    const [catsRes, prodsRes] = await Promise.all([
-      fetch(`${MENU_API_BASE}/api/categories`),
-      fetch(`${MENU_API_BASE}/api/menu`),
-    ]);
+    const res = await fetch(`${MENU_API_BASE}/api/menu-full`);
+    if (!res.ok) throw new Error('server');
 
-    if (!catsRes.ok || !prodsRes.ok) throw new Error('server');
-
-    const categories = await catsRes.json();
-    const products   = await prodsRes.json();
+    const { categories, products } = await res.json();
 
     // Добавляем путь к папке с фото
     const prodsWithImg = products.map(p => ({
